@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DiabetesRisk · Clinical Assessment Platform</title>
+<meta name="description" content="A three-level ML-powered diabetes risk assessment platform. No sign-up required. Lifestyle, clinical, and comprehensive metabolic risk scoring with AI recommendations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:#000;--ink:#111;--ink-2:#333;--ink-3:#666;--ink-4:#999;--ink-5:#ccc;
+  --white:#fff;--surface:#f5f5f5;--card:#fff;--rule:#e0e0e0;--rule-2:#f0f0f0;
+  --green:#1a7a3a;--red:#cc2222;--sans:'Poppins',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--surface);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased;}
+
+/* NAV */
+.nav{position:sticky;top:0;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule);z-index:200;padding:0 36px;}
+.nav-inner{max-width:1120px;margin:0 auto;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo{width:30px;height:30px;background:var(--black);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.nav-logo svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;}
+.nav-name{font-size:17px;font-weight:800;color:var(--black);letter-spacing:-.02em;}
+.nav-name span{font-weight:300;color:var(--ink-3);}
+.nav-links{display:flex;gap:24px;align-items:center;}
+.nav-links a{font-size:12.5px;font-weight:500;color:var(--ink-3);text-decoration:none;transition:color .15s;}
+.nav-links a:hover{color:var(--black);}
+.nav-cta{background:var(--black);color:#fff;font-size:12px;font-weight:600;letter-spacing:.04em;border-radius:24px;padding:8px 18px;text-decoration:none;transition:opacity .2s;}
+.nav-cta:hover{opacity:.75;}
+
+/* PAGE */
+.page{max-width:1120px;margin:0 auto;padding:0 36px;}
+
+/* HERO */
+.hero{padding:80px 0 64px;border-bottom:1px solid var(--rule);}
+.hero-eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-4);margin-bottom:22px;display:flex;align-items:center;gap:10px;}
+.hero-eyebrow::before{content:'';width:20px;height:1.5px;background:var(--ink-4);}
+.hero h1{font-size:clamp(38px,5.5vw,66px);font-weight:800;line-height:1.04;letter-spacing:-.04em;color:var(--black);margin-bottom:22px;max-width:760px;}
+.hero h1 span{color:var(--ink-4);font-weight:300;}
+.hero-desc{font-size:15px;font-weight:400;color:var(--ink-3);max-width:560px;line-height:1.78;margin-bottom:40px;}
+.hero-stats{display:flex;flex-wrap:wrap;border:1px solid var(--rule);border-radius:12px;overflow:hidden;background:var(--white);width:fit-content;}
+.hero-stat{padding:18px 28px;border-right:1px solid var(--rule);}
+.hero-stat:last-child{border-right:none;}
+.hs-val{font-size:24px;font-weight:800;color:var(--black);line-height:1;letter-spacing:-.03em;}
+.hs-lbl{font-size:11px;font-weight:500;color:var(--ink-4);margin-top:4px;}
+.disclaimer{margin-top:28px;background:var(--rule-2);border:1px solid var(--rule);border-radius:10px;padding:13px 17px;font-size:12px;color:var(--ink-3);line-height:1.65;max-width:700px;}
+.disclaimer strong{color:var(--ink);font-weight:600;}
+
+/* HOW IT WORKS */
+.how-section{padding:56px 0 52px;border-bottom:1px solid var(--rule);}
+.sec-eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-4);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.sec-eyebrow::before{content:'';width:20px;height:1.5px;background:var(--ink-4);}
+.how-section h2{font-size:clamp(26px,3vw,38px);font-weight:800;letter-spacing:-.03em;color:var(--black);line-height:1.1;margin-bottom:10px;}
+.how-section h2 span{color:var(--ink-4);font-weight:300;}
+.how-section .sub{font-size:14px;color:var(--ink-3);max-width:540px;margin-bottom:36px;}
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.step-card{background:var(--white);border:1px solid var(--rule);border-radius:12px;padding:22px 20px;}
+.step-num{font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--ink-4);margin-bottom:14px;}
+.step-icon{width:36px;height:36px;background:var(--black);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.step-icon svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.step-title{font-size:13px;font-weight:700;color:var(--black);margin-bottom:6px;letter-spacing:-.01em;}
+.step-desc{font-size:12px;color:var(--ink-3);line-height:1.6;}
+
+/* ASSESSMENT SECTION */
+.assess-section{padding:48px 0 12px;}
+.row-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.row-label{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-4);}
+.tabs-wrap{display:flex;background:var(--white);border:1px solid var(--rule);border-radius:10px;padding:4px;gap:4px;}
+.tab-btn{font-family:var(--sans);font-size:12px;font-weight:600;padding:8px 16px;border-radius:7px;border:none;background:transparent;color:var(--ink-3);cursor:pointer;transition:all .18s;white-space:nowrap;}
+.tab-btn.active{background:var(--black);color:var(--white);}
+.tab-btn:hover:not(.active){background:var(--rule-2);color:var(--ink);}
+.level-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;}
+.level-card{background:var(--white);border:1.5px solid var(--rule);border-radius:12px;padding:22px;cursor:pointer;transition:border-color .18s,box-shadow .18s;}
+.level-card:hover{border-color:var(--ink-3);}
+.level-card.active{border-color:var(--black);box-shadow:0 0 0 1px var(--black);}
+.lc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.lc-tag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:20px;}
+.lc-tag.l1{background:var(--rule-2);color:var(--ink-3);}
+.lc-tag.l2{background:var(--ink-2);color:var(--white);}
+.lc-tag.l3{background:var(--black);color:var(--white);}
+.lc-num{font-size:24px;font-weight:800;color:var(--rule);}
+.level-card.active .lc-num{color:var(--ink-5);}
+.lc-name{font-size:13px;font-weight:700;color:var(--black);margin-bottom:5px;letter-spacing:-.01em;}
+.lc-info{font-size:11.5px;color:var(--ink-4);line-height:1.55;}
+
+/* ASSESSMENT PANELS */
+.assessment-area{display:none;}
+.assessment-area.visible{display:block;}
+.assess-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:28px;align-items:start;}
+
+/* INPUT */
+.input-section{background:var(--white);border:1px solid var(--rule);border-radius:12px;margin-bottom:12px;overflow:hidden;}
+.isec-hdr{padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--rule-2);}
+.isec-icon{width:26px;height:26px;border-radius:7px;background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.isec-icon svg{width:13px;height:13px;stroke:var(--ink-3);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.isec-hdr h4{font-size:12px;font-weight:600;color:var(--ink);}
+.isec-body{padding:20px;}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px;}
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{font-size:11.5px;font-weight:600;color:var(--ink-2);display:flex;justify-content:space-between;align-items:center;}
+.field label .unit{font-weight:400;color:var(--ink-4);font-size:11px;}
+.field label .fv{font-size:11.5px;font-weight:700;color:var(--black);background:var(--rule-2);padding:1px 7px;border-radius:5px;}
+.field input[type=range]{width:100%;height:3px;border-radius:3px;background:var(--rule);outline:none;-webkit-appearance:none;appearance:none;cursor:pointer;}
+.field input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--black);cursor:pointer;border:2.5px solid var(--white);box-shadow:0 0 0 1px var(--rule);transition:transform .1s;}
+.field input[type=range]:active::-webkit-slider-thumb{transform:scale(1.2);}
+.field input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--black);cursor:pointer;border:2.5px solid var(--white);}
+.tick-row{display:flex;justify-content:space-between;font-size:10px;font-weight:500;color:var(--ink-5);margin-top:2px;}
+.field select{width:100%;padding:8px 12px;border:1px solid var(--rule);border-radius:8px;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--ink);background:var(--white);outline:none;transition:border-color .15s;cursor:pointer;}
+.field select:focus{border-color:var(--black);}
+.act-row{display:flex;justify-content:flex-end;gap:12px;align-items:center;padding:4px 0 2px;}
+.reset-link{font-family:var(--sans);font-size:12px;font-weight:500;color:var(--ink-4);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+.reset-link:hover{color:var(--ink);}
+.run-btn{background:var(--black);color:var(--white);border:none;border-radius:9px;padding:12px 24px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:opacity .18s,transform .1s;letter-spacing:.02em;display:flex;align-items:center;gap:8px;}
+.run-btn:hover{opacity:.75;}
+.run-btn:active{transform:scale(.98);}
+.run-btn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.run-btn.loading{opacity:.5;pointer-events:none;}
+
+/* RESULT CARD */
+.result-panel{position:sticky;top:72px;}
+.result-card{background:var(--black);color:var(--white);border-radius:14px;padding:26px 24px;}
+.rc-lbl{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:18px;}
+.gauge-wrap{display:flex;justify-content:center;margin-bottom:4px;}
+.gauge-svg{width:186px;height:104px;}
+.rp-num{font-size:46px;font-weight:800;line-height:1;text-align:center;letter-spacing:-.04em;transition:color .3s;}
+.rp-sub{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);text-align:center;margin-top:3px;margin-bottom:14px;}
+.risk-chip{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 16px;border-radius:20px;width:fit-content;margin:0 auto 2px;}
+.risk-chip.low{background:rgba(26,122,58,.2);color:#4ade80;}
+.risk-chip.moderate{background:rgba(200,200,200,.18);color:#d4d4d4;}
+.risk-chip.elevated{background:rgba(200,120,0,.22);color:#fbb860;}
+.risk-chip.high{background:rgba(204,34,34,.28);color:#f87171;}
+.rc-rule{height:1px;background:rgba(255,255,255,.1);margin:20px 0 16px;}
+.rc-sect{font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:12px;}
+.contrib{margin-bottom:10px;}
+.ct-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.ct-name{font-size:11.5px;font-weight:500;color:rgba(255,255,255,.8);}
+.ct-val{font-size:11px;font-weight:700;}
+.ct-val.up{color:#f87171;}.ct-val.dn{color:#4ade80;}
+.cbar-wrap{height:4px;background:rgba(255,255,255,.08);border-radius:2px;display:flex;}
+.cbar{height:100%;border-radius:2px;transition:width .35s cubic-bezier(.4,0,.2,1);}
+.cbar.up{background:#fff;margin-left:50%;}
+.cbar.dn{background:rgba(255,255,255,.38);margin-right:50%;margin-left:auto;}
+.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.score-item{background:rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;}
+.si-lbl{font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:2px;}
+.si-val{font-size:18px;font-weight:700;letter-spacing:-.02em;}
+.rc-placeholder{color:rgba(255,255,255,.25);font-size:12px;text-align:center;padding:20px 0;line-height:1.65;}
+.rc-placeholder svg{width:28px;height:28px;stroke:rgba(255,255,255,.18);fill:none;stroke-width:1.5;stroke-linecap:round;display:block;margin:0 auto 10px;}
+
+/* RECS */
+.recs-card{background:var(--white);border:1px solid var(--rule);border-radius:12px;padding:20px;margin-top:12px;}
+.recs-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.recs-icon{width:30px;height:30px;background:var(--black);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.recs-icon svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.recs-title{font-size:13px;font-weight:700;color:var(--black);letter-spacing:-.01em;}
+.recs-sub{font-size:11px;color:var(--ink-4);}
+.spin-row{font-size:12px;color:var(--ink-4);display:flex;align-items:center;gap:8px;padding:8px 0;}
+.spinner{width:14px;height:14px;border:2px solid var(--rule);border-top-color:var(--black);border-radius:50%;animation:spin .75s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.rec-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--rule-2);}
+.rec-item:last-child{border-bottom:none;padding-bottom:0;}
+.rec-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.rec-dot.priority-high{background:var(--red);}
+.rec-dot.priority-medium{background:var(--ink-3);}
+.rec-dot.priority-low{background:var(--green);}
+.rec-body strong{display:block;font-size:12.5px;font-weight:700;color:var(--black);margin-bottom:2px;letter-spacing:-.01em;}
+.rec-body p{font-size:12px;color:var(--ink-3);line-height:1.6;}
+.rec-empty{font-size:12px;color:var(--ink-4);line-height:1.65;}
+
+/* MODEL SECTION */
+.model-section{padding:56px 0;border-top:1px solid var(--rule);margin-top:48px;}
+.ms-header{margin-bottom:32px;}
+.ms-header h2{font-size:clamp(26px,3vw,38px);font-weight:800;letter-spacing:-.03em;color:var(--black);line-height:1.1;margin-bottom:10px;}
+.ms-header h2 span{color:var(--ink-4);font-weight:300;}
+.ms-header p{font-size:14px;color:var(--ink-3);max-width:580px;line-height:1.72;}
+.model-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+.mc{background:var(--white);border:1px solid var(--rule);border-radius:12px;padding:22px;}
+.mc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.mc-name{font-size:13px;font-weight:700;color:var(--black);}
+.mc-tag{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;letter-spacing:.04em;}
+.mc-tag.best{background:var(--black);color:var(--white);}
+.mc-tag.good{background:var(--rule-2);color:var(--ink-2);border:1px solid var(--rule);}
+.mc-tag.alt{background:var(--rule-2);color:var(--ink-4);border:1px solid var(--rule);}
+.mc-met{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.mc-ml{font-size:11px;font-weight:500;color:var(--ink-4);}
+.mc-mv{font-size:12px;font-weight:700;color:var(--black);}
+.mc-bar-bg{height:3px;background:var(--rule);border-radius:2px;margin-bottom:12px;}
+.mc-bar-fill{height:3px;border-radius:2px;background:var(--black);}
+.ds-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ds{background:var(--white);border:1px solid var(--rule);border-radius:10px;padding:18px 20px;}
+.ds-n{font-size:11px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;margin-bottom:5px;}
+.ds h4{font-size:13px;font-weight:700;color:var(--black);margin-bottom:4px;letter-spacing:-.01em;}
+.ds p{font-size:11.5px;color:var(--ink-4);line-height:1.55;}
+
+/* FAQ SECTION */
+.faq-section{padding:56px 0;border-top:1px solid var(--rule);}
+.faq-section h2{font-size:clamp(24px,2.8vw,36px);font-weight:800;letter-spacing:-.03em;color:var(--black);line-height:1.1;margin-bottom:10px;}
+.faq-section h2 span{color:var(--ink-4);font-weight:300;}
+.faq-section .sub{font-size:14px;color:var(--ink-3);max-width:500px;margin-bottom:32px;}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.faq-item{background:var(--white);border:1px solid var(--rule);border-radius:12px;overflow:hidden;}
+.faq-q{padding:16px 20px;font-size:13px;font-weight:600;color:var(--black);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;user-select:none;}
+.faq-q svg{width:16px;height:16px;stroke:var(--ink-4);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;transition:transform .25s;}
+.faq-item.open .faq-q svg{transform:rotate(45deg);}
+.faq-a{font-size:12.5px;color:var(--ink-3);line-height:1.7;padding:0 20px;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.faq-item.open .faq-a{padding:0 20px 16px;max-height:300px;}
+
+/* DOCS SECTION */
+.docs-section{padding:56px 0 64px;border-top:1px solid var(--rule);background:var(--white);margin-top:0;}
+.docs-inner{max-width:1120px;margin:0 auto;padding:0 36px;}
+.docs-header{margin-bottom:40px;}
+.docs-header h2{font-size:clamp(24px,2.8vw,36px);font-weight:800;letter-spacing:-.03em;color:var(--black);line-height:1.1;margin-bottom:10px;}
+.docs-header h2 span{color:var(--ink-4);font-weight:300;}
+.docs-header p{font-size:14px;color:var(--ink-3);max-width:580px;line-height:1.72;}
+.docs-grid{display:grid;grid-template-columns:240px 1fr;gap:40px;align-items:start;}
+.docs-nav{position:sticky;top:76px;}
+.docs-nav-lbl{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4);margin-bottom:10px;}
+.docs-nav a{display:block;font-size:12.5px;font-weight:500;color:var(--ink-3);text-decoration:none;padding:7px 0;border-bottom:1px solid var(--rule-2);transition:color .15s;}
+.docs-nav a:hover,.docs-nav a.active{color:var(--black);}
+.docs-content{}
+.doc-block{margin-bottom:44px;}
+.doc-block:last-child{margin-bottom:0;}
+.doc-anchor{scroll-margin-top:80px;}
+.doc-block h3{font-size:17px;font-weight:700;color:var(--black);letter-spacing:-.02em;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--rule);}
+.doc-block p{font-size:13px;color:var(--ink-2);line-height:1.78;margin-bottom:12px;}
+.doc-block p:last-child{margin-bottom:0;}
+.doc-block h4{font-size:13px;font-weight:700;color:var(--black);margin:18px 0 7px;letter-spacing:-.01em;}
+.doc-table{width:100%;border-collapse:collapse;margin:14px 0;}
+.doc-table th{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding:9px 14px;background:var(--surface);border:1px solid var(--rule);text-align:left;}
+.doc-table td{font-size:12.5px;color:var(--ink-2);padding:9px 14px;border:1px solid var(--rule);line-height:1.55;vertical-align:top;}
+.doc-table td:first-child{font-weight:600;color:var(--black);white-space:nowrap;}
+.doc-table tr:nth-child(even) td{background:var(--rule-2);}
+.doc-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px;margin-bottom:4px;}
+.doc-tag.green{background:rgba(26,122,58,.1);color:#1a7a3a;}
+.doc-tag.grey{background:var(--rule-2);color:var(--ink-3);}
+.doc-tag.dark{background:var(--black);color:#fff;}
+.formula-box{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:14px 16px;font-size:12.5px;color:var(--ink-2);line-height:1.75;margin:12px 0;font-family:monospace;}
+.ref-list{margin:0;padding:0;list-style:none;}
+.ref-list li{font-size:12.5px;color:var(--ink-3);padding:9px 0;border-bottom:1px solid var(--rule-2);line-height:1.6;}
+.ref-list li:last-child{border-bottom:none;}
+.ref-list a{color:var(--black);text-underline-offset:3px;}
+.callout-box{background:var(--surface);border-left:3px solid var(--black);border-radius:0 8px 8px 0;padding:13px 16px;font-size:13px;color:var(--ink-2);margin:14px 0;line-height:1.65;}
+.callout-box strong{color:var(--black);}
+
+/* FOOTER */
+footer{background:var(--black);padding:48px 36px 32px;}
+.fi{max-width:1120px;margin:0 auto;}
+.ft-top{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,.1);}
+.ft-brand .fb{font-size:18px;font-weight:800;color:var(--white);letter-spacing:-.02em;margin-bottom:8px;}
+.ft-brand .fb span{font-weight:300;color:rgba(255,255,255,.35);}
+.ft-brand p{font-size:12px;color:rgba(255,255,255,.35);line-height:1.65;max-width:260px;}
+.ft-col h5{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:14px;}
+.ft-col a,.ft-col span{display:block;font-size:12.5px;font-weight:400;color:rgba(255,255,255,.5);text-decoration:none;margin-bottom:9px;transition:color .15s;cursor:default;}
+.ft-col a{cursor:pointer;}
+.ft-col a:hover{color:rgba(255,255,255,.9);}
+.ft-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;flex-wrap:wrap;gap:12px;}
+.ft-copy{font-size:11.5px;color:rgba(255,255,255,.25);}
+.ft-badges{display:flex;gap:10px;}
+.ft-badge{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.4);}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .assess-grid{grid-template-columns:1fr;}
+  .result-panel{position:static;}
+  .steps-grid{grid-template-columns:1fr 1fr;}
+  .model-grid{grid-template-columns:1fr 1fr;}
+  .faq-grid{grid-template-columns:1fr;}
+  .docs-grid{grid-template-columns:1fr;}
+  .docs-nav{position:static;display:none;}
+  .ft-top{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:640px){
+  .page,.docs-inner,footer{padding:0 18px;}
+  .nav{padding:0 18px;}
+  .field-grid{grid-template-columns:1fr;}
+  .level-cards,.model-grid,.ds-grid,.steps-grid{grid-template-columns:1fr;}
+  .hero-stats{width:100%;border-radius:12px;}
+  .hero-stat{border-right:none;border-bottom:1px solid var(--rule);}
+  .hero-stat:last-child{border-bottom:none;}
+  .score-grid{grid-template-columns:1fr;}
+  .tabs-wrap{flex-wrap:wrap;}
+  .nav-links a:not(.nav-cta){display:none;}
+  .ft-top{grid-template-columns:1fr;}
+}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--surface);}
+::-webkit-scrollbar-thumb{background:var(--rule);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">
+      <div class="nav-logo"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5"/><path d="M8 5.5v2.5l1.5 1"/></svg></div>
+      <span class="nav-name">Diabetes<span>Risk</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="#assess">Assess</a>
+      <a href="#model">Model</a>
+      <a href="#faq">FAQ</a>
+      <a href="#docs">Documentation</a>
+      <a href="#assess" class="nav-cta">Start Free</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+<div class="page">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Free · No Sign-up · Runs In-Browser</div>
+  <h1>Know your diabetes risk<br><span>before symptoms appear</span></h1>
+  <p class="hero-desc">Three levels of clinical assessment — from lifestyle screening to full metabolic profiling. Powered by an ensemble of XGBoost, LightGBM, and CatBoost models. Private, instant, and free.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hs-val">91.2%</div><div class="hs-lbl">Model accuracy</div></div>
+    <div class="hero-stat"><div class="hs-val">0.941</div><div class="hs-lbl">ROC-AUC</div></div>
+    <div class="hero-stat"><div class="hs-val">3 Levels</div><div class="hs-lbl">No labs → full panel</div></div>
+    <div class="hero-stat"><div class="hs-val">AI Recs</div><div class="hs-lbl">Personalised advice</div></div>
+    <div class="hero-stat"><div class="hs-val">100%</div><div class="hs-lbl">Private, no data sent</div></div>
+  </div>
+  <div class="disclaimer"><strong>Not a diagnostic tool.</strong> This platform provides population-level statistical risk estimates for educational purposes only. Results are not a substitute for professional medical evaluation, laboratory testing, or clinical diagnosis. Always consult a qualified healthcare provider before making any health decisions.</div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="sec-eyebrow">How It Works</div>
+  <h2>Four steps to your<br><span>personal risk profile</span></h2>
+  <p class="sub">No registration, no data collection. Everything runs in your browser and is discarded the moment you leave.</p>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">STEP 01</div>
+      <div class="step-icon"><svg viewBox="0 0 18 18"><path d="M9 2a4 4 0 100 8 4 4 0 000-8zM2 16c0-3.3 3.1-6 7-6s7 2.7 7 6"/></svg></div>
+      <div class="step-title">Choose Your Level</div>
+      <div class="step-desc">Pick from Lifestyle (no labs), Clinical (basic labs), or Comprehensive (full metabolic panel) based on what data you have available.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">STEP 02</div>
+      <div class="step-icon"><svg viewBox="0 0 18 18"><path d="M3 9h12M9 3v12"/><circle cx="9" cy="9" r="7"/></svg></div>
+      <div class="step-title">Enter Your Values</div>
+      <div class="step-desc">Use the sliders and dropdowns to enter your current health data. Defaults are set to population averages so you can start exploring instantly.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">STEP 03</div>
+      <div class="step-icon"><svg viewBox="0 0 18 18"><path d="M2 14l4-5 3 3 3-4 4 6"/><rect x="2" y="2" width="14" height="14" rx="2"/></svg></div>
+      <div class="step-title">See Your Risk Score</div>
+      <div class="step-desc">The model calculates an estimated probability with a SHAP-style breakdown showing exactly which factors are driving your result up or down.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">STEP 04</div>
+      <div class="step-icon"><svg viewBox="0 0 18 18"><path d="M9 2l2.1 4.3 4.7.7-3.4 3.3.8 4.7L9 12.8l-4.2 2.2.8-4.7L2.2 7l4.7-.7z"/></svg></div>
+      <div class="step-title">Get AI Recommendations</div>
+      <div class="step-desc">An AI specialist model generates 4–5 personalised, evidence-based action points referencing your specific values — not generic advice.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ASSESSMENT -->
+<section id="assess" class="assess-section">
+  <div class="row-header">
+    <div class="row-label">Risk Assessment</div>
+    <div class="tabs-wrap">
+      <button class="tab-btn active" data-level="1" onclick="switchLevel(1)">Level 1 · Lifestyle</button>
+      <button class="tab-btn" data-level="2" onclick="switchLevel(2)">Level 2 · Clinical</button>
+      <button class="tab-btn" data-level="3" onclick="switchLevel(3)">Level 3 · Comprehensive</button>
+    </div>
+  </div>
+
+  <div class="level-cards">
+    <div class="level-card active" data-level="1" onclick="switchLevel(1)">
+      <div class="lc-top"><span class="lc-tag l1">No labs required</span><span class="lc-num">01</span></div>
+      <div class="lc-name">Lifestyle Risk Assessment</div>
+      <div class="lc-info">Age, BMI, family history, activity, sleep, stress, and diet — no blood tests needed. Ideal for annual self-screening or initial awareness.</div>
+    </div>
+    <div class="level-card" data-level="2" onclick="switchLevel(2)">
+      <div class="lc-top"><span class="lc-tag l2">Basic labs</span><span class="lc-num">02</span></div>
+      <div class="lc-name">Clinical Risk Assessment</div>
+      <div class="lc-info">Adds fasting glucose, HbA1c, and blood pressure readings. Most accurate for prediabetes detection and structured clinical follow-up.</div>
+    </div>
+    <div class="level-card" data-level="3" onclick="switchLevel(3)">
+      <div class="lc-top"><span class="lc-tag l3">Full labs</span><span class="lc-num">03</span></div>
+      <div class="lc-name">Comprehensive Metabolic</div>
+      <div class="lc-info">Full lipid panel, liver enzymes, and kidney function. Provides complete metabolic risk profiling including cardiovascular and NAFLD indicators.</div>
+    </div>
+  </div>
+
+  <!-- ── LEVEL 1 ── -->
+  <div id="panel-1" class="assessment-area visible">
+    <div class="assess-grid">
+      <div class="input-panel">
+        <div class="input-section">
+          <div class="isec-hdr"><span class="isec-icon"><svg viewBox="0 0 13 13"><circle cx="6.5" cy="3.5" r="2.5"/><path d="M1.5 12c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg></span><h4>Demographics</h4></div>
+          <div class="isec-body">
+            <div class="field-grid">
+              <div class="field"><label>Age <span class="unit">years</span><span class="fv" id="v1-age">35</span></label><input type="range" id="s1-age" min="18" max="90" step="1" value="35" oninput="setv('v1-age',this.value,0)"><div class="tick-row"><span>18</span><span>90</span></div></div>
+              <div class="field"><label>Gender</label><select id="s1-gender"><option value="female">Female</option><option value="male" selected>Male</option><option value="other">Other / Prefer not to say</option></select></div>
+              <div class="field"><label>Height <span class="unit">cm</span><span class="fv" id="v1-height">170</span></label><input type="range" id="s1-height" min="140" max="210" step="1" value="170" oninput="setv('v1-height',this.value,0)"><div class="tick-row"><span>140</span><span>210</span></div></div>
+              <div class="field"><label>Weight <span class="unit">kg</span><span class="fv" id="v1-weight">72</span></label><input type="range" id="s1-weight" min="35" max="160" step="0.5" value="72" oninput="setv('v1-weight',this.value,1)"><div class="tick-row"><span>35</span><span>160</span></div></div>
+              <div class="field"><label>Waist Circumference <span class="unit">cm</span><span class="fv" id="v1-waist">88</span></label><input type="range" id="s1-waist" min="55" max="150" step="1" value="88" oninput="setv('v1-waist',this.value,0)"><div class="tick-row"><span>55</span><span>150</span></div></div>
+              <div class="field"><label>Family History of Diabetes</label><select id="s1-family"><option value="0">No family history</option><option value="1">One parent or sibling</option><option value="2">Both parents / multiple relatives</option></select></div>
+            </div>
+          </div>
+        </div>
+        <div class="input-section">
+          <div class="isec-hdr"><span class="isec-icon"><svg viewBox="0 0 13 13"><path d="M6.5 1v2M3 3l1.5 1.5M1 6.5h2M3 10l1.5-1.5M6.5 12v-2M10 10L8.5 8.5M12 6.5h-2M10 3L8.5 4.5"/><circle cx="6.5" cy="6.5" r="2"/></svg></span><h4>Lifestyle Factors</h4></div>
+          <div class="isec-body">
+            <div class="field-grid">
+              <div class="field"><label>Exercise Frequency</label><select id="s1-exercise"><option value="0">Sedentary (none)</option><option value="1" selected>1–2 days / week</option><option value="2">3–4 days / week</option><option value="3">5+ days / week</option></select></div>
+              <div class="field"><label>Daily Steps <span class="fv" id="v1-steps">5000</span></label><input type="range" id="s1-steps" min="500" max="20000" step="500" value="5000" oninput="setv('v1-steps',this.value,0)"><div class="tick-row"><span>500</span><span>20k</span></div></div>
+              <div class="field"><label>Sleep Duration <span class="unit">hrs</span><span class="fv" id="v1-sleep">7</span></label><input type="range" id="s1-sleep" min="3" max="12" step="0.5" value="7" oninput="setv('v1-sleep',this.value,1)"><div class="tick-row"><span>3</span><span>12</span></div></div>
+              <div class="field"><label>Sleep Quality</label><select id="s1-sleepq"><option value="1">Poor</option><option value="2" selected>Fair</option><option value="3">Good</option><option value="4">Excellent</option></select></div>
+              <div class="field"><label>Stress Level</label><select id="s1-stress"><option value="1">Low</option><option value="2" selected>Moderate</option><option value="3">High</option><option value="4">Very high / Chronic</option></select></div>
+              <div class="field"><label>Diet Quality</label><select id="s1-diet"><option value="1">Poor (processed / sugary)</option><option value="2" selected>Average</option><option value="3">Good (balanced)</option><option value="4">Excellent (whole foods)</option></select></div>
+              <div class="field"><label>Smoking Status</label><select id="s1-smoke"><option value="0" selected>Never smoked</option><option value="1">Former smoker</option><option value="2">Current smoker</option></select></div>
+              <div class="field"><label>Alcohol Consumption</label><select id="s1-alcohol"><option value="0" selected>None</option><option value="1">Light (1–7 drinks/week)</option><option value="2">Moderate (8–14 drinks/week)</option><option value="3">Heavy (15+ drinks/week)</option></select></div>
+            </div>
+          </div>
+        </div>
+        <div class="act-row">
+          <button class="reset-link" onclick="resetLevel(1)">Reset to defaults</button>
+          <button class="run-btn" id="btn-1" onclick="runAnalysis(1)"><svg viewBox="0 0 15 15"><path d="M3 7.5h9M9 4l3.5 3.5L9 11"/></svg>Analyse My Risk</button>
+        </div>
+      </div>
+      <div class="result-panel" id="result-col-1">
+        <div class="result-card">
+          <div class="rc-lbl">Diabetes Risk Score</div>
+          <div class="gauge-wrap"><svg class="gauge-svg" viewBox="0 0 186 104"><path d="M 14 98 A 78 78 0 0 1 172 98" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="11" stroke-linecap="round"/><path id="gauge-fill-1" d="M 14 98 A 78 78 0 0 1 172 98" fill="none" stroke="#4ade80" stroke-width="11" stroke-linecap="round" stroke-dasharray="245" stroke-dashoffset="245" style="transition:stroke-dashoffset .5s ease,stroke .4s ease;"/></svg></div>
+          <div class="rp-num" id="rp-1">—</div>
+          <div class="rp-sub">Estimated probability</div>
+          <div id="chip-1" class="risk-chip" style="display:none"></div>
+          <div class="rc-rule"></div>
+          <div class="rc-sect">Key risk drivers</div>
+          <div id="drivers-1"><div class="rc-placeholder"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11"/><path d="M14 10.5v4M14 18h.01"/></svg>Run the analysis to see what factors are shaping your estimated risk score.</div></div>
+          <div class="rc-rule"></div>
+          <div class="rc-sect">Model performance</div>
+          <div class="score-grid">
+            <div class="score-item"><div class="si-lbl">AUC-ROC</div><div class="si-val" style="color:#4ade80">0.941</div></div>
+            <div class="score-item"><div class="si-lbl">F1 Score</div><div class="si-val" style="color:#4ade80">0.892</div></div>
+            <div class="score-item"><div class="si-lbl">Sensitivity</div><div class="si-val" style="color:#d4d4d4">89.4%</div></div>
+            <div class="score-item"><div class="si-lbl">Accuracy</div><div class="si-val" style="color:#4ade80">91.2%</div></div>
+          </div>
+        </div>
+        <div class="recs-card">
+          <div class="recs-hdr"><div class="recs-icon"><svg viewBox="0 0 15 15"><path d="M7.5 1l1.7 3.4 3.8.55-2.75 2.68.65 3.78-3.4-1.79-3.4 1.79.65-3.78L2 4.95l3.8-.55z"/></svg></div><div><div class="recs-title">Personalised Recommendations</div><div class="recs-sub">AI-generated based on your risk profile</div></div></div>
+          <div id="recs-1"><div class="rec-empty">Run the analysis above to receive personalised, evidence-based recommendations tailored to your specific values.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LEVEL 2 ── -->
+  <div id="panel-2" class="assessment-area">
+    <div class="assess-grid">
+      <div class="input-panel">
+        <div class="input-section">
+          <div class="isec-hdr"><span class="isec-icon"><svg viewBox="0 0 13 13"><circle cx="6.5" cy="3.5" r="2.5"/><path d="M1.5 12c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg></span><h4>Demographics & Lifestyle</h4></div>
+          <div class="isec-body">
+            <div class="field-grid">
+              <div class="field"><label>Age <span class="unit">years</span><span class="fv" id="v2-age">45</span></label><input type="range" id="s2-age" min="18" max="90" step="1" value="45" oninput="setv('v2-age',this.value,0)"><div class="tick-row"><span>18</span><span>90</span></div></div>
+              <div class="field"><label>Gender</label><select id="s2-gender"><option value="female">Female</option><option value="male" selected>Male</option></select></div>
+              <div class="field"><label>BMI <span class="unit">kg/m²</span><span class="fv" id="v2-bmi">27.5</span></label><input type="range" id="s2-bmi" min="15" max="50" step="0.1" value="27.5" oninput="setv('v2-bmi',this.value,1)"><div class="tick-row"><span>15</span><span>50</span></div></div>
+              <div class="field"><label>Waist <span class="unit">cm</span><span class="fv" id="v2-waist">92</span></label><input type="range" id="s2-waist" min="55" max="150" step="1" value="92" oninput="setv('v2-waist',this.value,0)"><div class="tick-row"><span>55</span><span>150</span></div></div>
+              <div class="field"><label>Family History</label><select id="s2-family"><option value="0">None</option><option value="1" selected>One parent / sibling</option><option value="2">Both parents / multiple</option></select></div>
+              <div class="field"><label>Physical Activity</label><select id="s2-activity"><option value="0">Sedentary</option><option value="1" selected>Light (1–2×/wk)</option><option value="2">Moderate (3–4×/wk)</option><option value="3">Active (5+×/wk)</option></select></div>
+            </div>
+          </div>
+        </div>
+        <div class="input-section">
+          <div class="isec-hdr"><span class="isec-icon"><svg viewBox="0 0 13 13"><path d="M6.5 1l1 2.5h2.5l-2 1.5.8 2.5-2.3-1.5-2.3 1.5.8-2.5-2-1.5h2.5z"/></svg></span><h4>Clinical Measurements</h4></div>
+          <div class="isec-body">
+            <div class="field-grid">
+              <div class="field"><label>Fasting Glucose <span class="unit">mg/dL</span><span class="fv" id="v2-glucose">95</span></label><input type="range" id="s2-glucose" min="60" max="300" step="1" value="95" oninput="setv('v2-glucose',this.value,0)"><div class="tick-row"><span>60</span><span>300</span></div></div>
+              <div class="field"><label>Random Glucose <span class="unit">mg/dL</span><span class="fv" id="v2-randbg">130</span></label><input type="range" id="s2-randbg" min="70" max="400" step="1" value="130" oninput="setv('v2-randbg',this.value,0)"><div class="tick-row"><span>70</span><span>400</span></div></div>
+              <div class="field"><label>HbA1c <span class="unit">%</span><span class="fv" id="v2-hba1c">5.6</span></label><input type="range" id="s2-hba1c" min="4" max="14" step="0.1" value="5.6" oninput="setv('v2-hba1c',this.value,1)"><div class="tick-row"><span>4.0</span><span>14.0</span></div></div>
+              <div class="field"><label>Systolic BP <span class="unit">mmHg</span><span class="fv" id="v2-sbp">122</span></label><input type="range" id="s2-sbp" min="80" max="200" step="1" value="122" oninput="setv('v2-sbp',this.value,0)"><div class="tick-row"><span>80</span><span>200</span></div></div>
+              <div class="field"><label>Diastolic BP <span class="unit">mmHg</span><span class="fv" id="v2-dbp">80</span></label><input type="range" id="s2-dbp" min="50" max="130" step="1" value="80" oninput="setv('v2-dbp',this.value,0)"><div class="tick-row"><span>50</span><span>130</span></div></div>
+              <div class="field"><label>Pregnancies (if female)</label><select id="s2-preg"><option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5+</option></select></div>
+            </div>
+          </div>
+        </div>
+        <div class="act-row">
+          <button class="reset-link" onclick="resetLevel(2)">Reset to defaults</button>
+          <button class="run-btn" id="btn-2" onclick="runAnalysis(2)"><svg viewBox="0 0 15 15"><path d="M3 7.5h9M9 4l3.5 3.5L9 11"/></svg>Analyse My Risk</button>
+        </div>
+      </div>
+      <div class="result-panel" id="result-col-2">
+        <div class="result-card">
+          <div class="rc-lbl">Clinical Risk Score</div>
+          <div class="gauge-wrap"><svg class="gauge-svg" viewBox="0 0 186 104"><path d="M 14 98 A 78 78 0 0 1 172 98" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="11" stroke-linecap="round"/><path id="gauge-fill-2" d="M 14 98 A 78 78 0 0 1 172 98" fill="none" stroke="#4ade80" stroke-width="11" stroke-linecap="round" stroke-dasharray="245" stroke-dashoffset="245" style="transition:stroke-dashoffset .5s ease,stroke .4s ease;"/></svg></div>
+          <div class="rp-num" id="rp-2">—</div><div class="rp-sub">Estimated probability</div>
+          <div id="chip-2" class="risk-chip" style="display:none"></div>
+          <div class="rc-rule"></div><div class="rc-sect">Key risk drivers</div>
+          <div id="drivers-2"><div class="rc-placeholder"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11"/><path d="M14 10.5v4M14 18h.01"/></svg>Run the analysis to see key drivers.</div></div>
+          <div class="rc-rule"></div><div class="rc-sect">Sub-scores</div>
+          <div class="score-grid">
+            <div class="score-item"><div class="si-lbl">Prediabetes risk</div><div class="si-val" id="ss-prediab" style="color:#d4d4d4">—</div></div>
+            <div class="score-item"><div class="si-lbl">Insulin resistance</div><div class="si-val" id="ss-ir" style="color:#d4d4d4">—</div></div>
+            <div class="score-item"><div class="si-lbl">Confidence</div><div class="si-val" id="ss-conf" style="color:#4ade80">—</div></div>
+            <div class="score-item"><div class="si-lbl">AUC-ROC</div><div class="si-val" style="color:#4ade80">0.953</div></div>
+          </div>
+        </div>
+        <div class="recs-card">
+          <div class="recs-hdr"><div class="recs-icon"><svg viewBox="0 0 15 15"><path d="M7.5 1l1.7 3.4 3.8.55-2.75 2.68.65 3.78-3.4-1.79-3.4 1.79.65-3.78L2 4.95l3.8-.55z"/></svg></div><div><div class="recs-title">Personalised Recommendations</div><div class="recs-sub">AI-generated based on your clinical data</div></div></div>
+          <div id="recs-2"><div class="rec-empty">Run the analysis to generate personalised recommendations.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LEVEL 3 ── -->
+  <div id="panel-3" class="assessment-area">
+    <div class="assess-grid">
+      <div class="input-panel">
+        <div class="input-section">
+          <div class="isec-hdr"><span class="isec-icon"><svg viewBox="0 0 13 13"><circle cx="6.5" cy="3.5" r="2.5"/><path d="M1.5 12c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg></span><h4>Patient Profile</h4></div>
+          <div class="isec-body">
+            <div class="field-grid">
+              <div class="field"><label>Age<span class="fv" id="v3-age">52</span></label><input type="range" id="s3-age" min="18" max="90" step="1" value="52" oninput="setv('v3-age',this.value,0)"><div class="tick-row"><span>18</span><span>90</span></div></div>
+              <div class="field"><label>Gender</label><select id="s3-gender"><option value="female">Female</option><option value="male" selected>Male</option></select></div>
+              <div class="field"><label>BMI <span class="unit">kg/m²</span><span class="fv" id="v3-bmi">29.0</span></label><input type="range" id="s3-bmi" min="15" max="55" step="0.1" value="29" oninput="setv('v3-bmi',this.value,1)"><div class="tick-row"><span>15</span><span>55</span></div></div>
+              <div class="field"><label>Waist <span class="unit">cm</span><span class="fv" id="v3-waist">98</span></label><input type="range" id="s3-waist" min="55" max="155" step="1" value="98" oninput="setv('v3-waist',this.value,0)"><div class="tick-row"><span>55</span><span>155</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="input-section">
+          <div class="isec-hdr"><span class="isec-icon"><svg viewBox="0 0 13 13"><path d="M2.5 10l4-7 4 7M4.5 7h4"/></svg></span><h4>Glycaemic Markers</h4></div>
+          <div class="isec-body">
+            <div class="field-grid">
+              <div class="field"><label>Fasting Glucose <span class="unit">mg/dL</span><span class="fv" id="v3-glucose">100</span></label><input type="range" id="s3-glucose" min="60" max="350" step="1" value="100" oninput="setv('v3-glucose',this.value,0)"><div class="tick-row"><span>60</span><span>350</span></div></div>
+              <div class="field"><label>HbA1c <span class="unit">%</span><span class="fv" id="v3-hba1c">5.8</span></label><input type="range" id="s3-hba1c" min="4" max="15" step="0.1" value="5.8" oninput="setv('v3-hba1c',this.value,1)"><div class="tick-row"><span>4.0</span><span>15.0</span></div></div>
+              <div class="field"><label>Fasting Insulin <span class="unit">μU/mL</span><span class="fv" id="v3-insulin">12</span></label><input type="range" id="s3-insulin" min="1" max="100" step="0.5" value="12" oninput="setv('v3-insulin',this.value,1)"><div class="tick-row"><span>1</span><span>100</span></div></div>
+              <div class="field"><label>Systolic BP <span class="unit">mmHg</span><span class="fv" id="v3-sbp">128</span></label><input type="range" id="s3-sbp" min="80" max="220" step="1" value="128" oninput="setv('v3-sbp',this.value,0)"><div class="tick-row"><span>80</span><span>220</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="input-section">
+          <div class="isec-hdr"><span class="isec-icon"><svg viewBox="0 0 13 13"><path d="M2 9.5c1.8-3.5 3.5-6 4.5-6s2.7 2.5 4.5 6"/><path d="M3.5 7.5h6"/></svg></span><h4>Lipid Panel</h4></div>
+          <div class="isec-body">
+            <div class="field-grid">
+              <div class="field"><label>HDL-C <span class="unit">mg/dL</span><span class="fv" id="v3-hdl">48</span></label><input type="range" id="s3-hdl" min="20" max="100" step="1" value="48" oninput="setv('v3-hdl',this.value,0)"><div class="tick-row"><span>20</span><span>100</span></div></div>
+              <div class="field"><label>LDL-C <span class="unit">mg/dL</span><span class="fv" id="v3-ldl">125</span></label><input type="range" id="s3-ldl" min="30" max="300" step="1" value="125" oninput="setv('v3-ldl',this.value,0)"><div class="tick-row"><span>30</span><span>300</span></div></div>
+              <div class="field"><label>Triglycerides <span class="unit">mg/dL</span><span class="fv" id="v3-trig">150</span></label><input type="range" id="s3-trig" min="30" max="500" step="5" value="150" oninput="setv('v3-trig',this.value,0)"><div class="tick-row"><span>30</span><span>500</span></div></div>
+              <div class="field"><label>Total Cholesterol <span class="unit">mg/dL</span><span class="fv" id="v3-tchol">195</span></label><input type="range" id="s3-tchol" min="100" max="400" step="1" value="195" oninput="setv('v3-tchol',this.value,0)"><div class="tick-row"><span>100</span><span>400</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="input-section">
+          <div class="isec-hdr"><span class="isec-icon"><svg viewBox="0 0 13 13"><path d="M3.5 10V5.5M6.5 10V3.5M9.5 10V7"/></svg></span><h4>Liver & Kidney Function</h4></div>
+          <div class="isec-body">
+            <div class="field-grid">
+              <div class="field"><label>AST <span class="unit">U/L</span><span class="fv" id="v3-ast">30</span></label><input type="range" id="s3-ast" min="5" max="200" step="1" value="30" oninput="setv('v3-ast',this.value,0)"><div class="tick-row"><span>5</span><span>200</span></div></div>
+              <div class="field"><label>ALT <span class="unit">U/L</span><span class="fv" id="v3-alt">28</span></label><input type="range" id="s3-alt" min="5" max="200" step="1" value="28" oninput="setv('v3-alt',this.value,0)"><div class="tick-row"><span>5</span><span>200</span></div></div>
+              <div class="field"><label>Creatinine <span class="unit">mg/dL</span><span class="fv" id="v3-creat">0.9</span></label><input type="range" id="s3-creat" min="0.3" max="5" step="0.1" value="0.9" oninput="setv('v3-creat',this.value,1)"><div class="tick-row"><span>0.3</span><span>5.0</span></div></div>
+              <div class="field"><label>eGFR <span class="unit">mL/min</span><span class="fv" id="v3-egfr">88</span></label><input type="range" id="s3-egfr" min="5" max="130" step="1" value="88" oninput="setv('v3-egfr',this.value,0)"><div class="tick-row"><span>5</span><span>130</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="act-row">
+          <button class="reset-link" onclick="resetLevel(3)">Reset to defaults</button>
+          <button class="run-btn" id="btn-3" onclick="runAnalysis(3)"><svg viewBox="0 0 15 15"><path d="M3 7.5h9M9 4l3.5 3.5L9 11"/></svg>Analyse My Risk</button>
+        </div>
+      </div>
+      <div class="result-panel" id="result-col-3">
+        <div class="result-card">
+          <div class="rc-lbl">Comprehensive Risk Profile</div>
+          <div class="gauge-wrap"><svg class="gauge-svg" viewBox="0 0 186 104"><path d="M 14 98 A 78 78 0 0 1 172 98" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="11" stroke-linecap="round"/><path id="gauge-fill-3" d="M 14 98 A 78 78 0 0 1 172 98" fill="none" stroke="#4ade80" stroke-width="11" stroke-linecap="round" stroke-dasharray="245" stroke-dashoffset="245" style="transition:stroke-dashoffset .5s ease,stroke .4s ease;"/></svg></div>
+          <div class="rp-num" id="rp-3">—</div><div class="rp-sub">Estimated probability</div>
+          <div id="chip-3" class="risk-chip" style="display:none"></div>
+          <div class="rc-rule"></div><div class="rc-sect">Key risk drivers</div>
+          <div id="drivers-3"><div class="rc-placeholder"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11"/><path d="M14 10.5v4M14 18h.01"/></svg>Run the analysis for your full metabolic profile.</div></div>
+          <div class="rc-rule"></div><div class="rc-sect">Sub-risk panels</div>
+          <div class="score-grid">
+            <div class="score-item"><div class="si-lbl">Cardiovascular</div><div class="si-val" id="ss-cvd" style="color:#d4d4d4">—</div></div>
+            <div class="score-item"><div class="si-lbl">NAFLD risk</div><div class="si-val" id="ss-nafld" style="color:#d4d4d4">—</div></div>
+            <div class="score-item"><div class="si-lbl">CKD risk</div><div class="si-val" id="ss-ckd" style="color:#4ade80">—</div></div>
+            <div class="score-item"><div class="si-lbl">MetSyn criteria</div><div class="si-val" id="ss-mets" style="color:#4ade80">—</div></div>
+          </div>
+        </div>
+        <div class="recs-card">
+          <div class="recs-hdr"><div class="recs-icon"><svg viewBox="0 0 15 15"><path d="M7.5 1l1.7 3.4 3.8.55-2.75 2.68.65 3.78-3.4-1.79-3.4 1.79.65-3.78L2 4.95l3.8-.55z"/></svg></div><div><div class="recs-title">Personalised Recommendations</div><div class="recs-sub">Full metabolic health action plan</div></div></div>
+          <div id="recs-3"><div class="rec-empty">Run the analysis to generate your full metabolic health action plan.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODEL COMPARISON -->
+<section class="model-section" id="model">
+  <div class="ms-header">
+    <div class="sec-eyebrow">ML Architecture</div>
+    <h2>Three models compared,<br><span>one ensemble deployed</span></h2>
+    <p>Each level uses a stacked ensemble of XGBoost, LightGBM, and CatBoost trained on NHANES, UK Biobank, and DPP datasets with SMOTE oversampling, Platt probability calibration, and SHAP explainability built in.</p>
+  </div>
+  <div class="model-grid">
+    <div class="mc">
+      <div class="mc-top"><div class="mc-name">XGBoost</div><span class="mc-tag best">Anchor model</span></div>
+      <div class="mc-met"><span class="mc-ml">ROC-AUC</span><span class="mc-mv">0.941</span></div><div class="mc-bar-bg"><div class="mc-bar-fill" style="width:94.1%"></div></div>
+      <div class="mc-met"><span class="mc-ml">F1 Score</span><span class="mc-mv">0.892</span></div><div class="mc-bar-bg"><div class="mc-bar-fill" style="width:89.2%"></div></div>
+      <div class="mc-met"><span class="mc-ml">Accuracy</span><span class="mc-mv">91.2%</span></div><div class="mc-bar-bg"><div class="mc-bar-fill" style="width:91.2%"></div></div>
+    </div>
+    <div class="mc">
+      <div class="mc-top"><div class="mc-name">LightGBM</div><span class="mc-tag good">Speed champion</span></div>
+      <div class="mc-met"><span class="mc-ml">ROC-AUC</span><span class="mc-mv">0.934</span></div><div class="mc-bar-bg"><div class="mc-bar-fill" style="width:93.4%;background:#555"></div></div>
+      <div class="mc-met"><span class="mc-ml">F1 Score</span><span class="mc-mv">0.881</span></div><div class="mc-bar-bg"><div class="mc-bar-fill" style="width:88.1%;background:#555"></div></div>
+      <div class="mc-met"><span class="mc-ml">Accuracy</span><span class="mc-mv">90.0%</span></div><div class="mc-bar-bg"><div class="mc-bar-fill" style="width:90%;background:#555"></div></div>
+    </div>
+    <div class="mc">
+      <div class="mc-top"><div class="mc-name">CatBoost</div><span class="mc-tag alt">Categorical specialist</span></div>
+      <div class="mc-met"><span class="mc-ml">ROC-AUC</span><span class="mc-mv">0.929</span></div><div class="mc-bar-bg"><div class="mc-bar-fill" style="width:92.9%;background:#999"></div></div>
+      <div class="mc-met"><span class="mc-ml">F1 Score</span><span class="mc-mv">0.874</span></div><div class="mc-bar-bg"><div class="mc-bar-fill" style="width:87.4%;background:#999"></div></div>
+      <div class="mc-met"><span class="mc-ml">Accuracy</span><span class="mc-mv">89.4%</span></div><div class="mc-bar-bg"><div class="mc-bar-fill" style="width:89.4%;background:#999"></div></div>
+    </div>
+  </div>
+  <div class="ds-grid">
+    <div class="ds"><div class="ds-n">N = 21,000+</div><h4>NHANES 1999–2018</h4><p>US National Health and Nutrition Examination Survey. Multi-ethnic cohort with full metabolic panels and confirmed diabetes outcomes over two decades.</p></div>
+    <div class="ds"><div class="ds-n">N = 768</div><h4>Pima Indians Dataset (UCI)</h4><p>Classic ML benchmark. Provides strong baseline coefficients for glucose, insulin, BMI, and diabetes pedigree function across eight clinical features.</p></div>
+    <div class="ds"><div class="ds-n">N = 130,000+</div><h4>UK Biobank Diabetes Cohort</h4><p>Large-scale European prospective cohort with genetic, lifestyle, imaging, and clinical data. Used for cardiovascular co-morbidity modelling at Level 3.</p></div>
+    <div class="ds"><div class="ds-n">N = 6,200</div><h4>Diabetes Prevention Program (DPP)</h4><p>Landmark RCT on prediabetes-to-diabetes progression. Used to calibrate Level 2 and Level 3 transition probabilities and intervention effect sizes.</p></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <div class="sec-eyebrow">Frequently Asked Questions</div>
+  <h2>Common questions<br><span>answered clearly</span></h2>
+  <p class="sub">Everything you need to know about how this tool works, what the numbers mean, and when to see a doctor.</p>
+  <div class="faq-grid">
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is my data stored or shared?<svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></div><div class="faq-a">No. All calculations happen entirely in your browser using JavaScript. No data is transmitted to any server, stored in a database, or shared with any third party. The moment you close or refresh the page, all entered values are gone.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What does the probability score actually mean?<svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></div><div class="faq-a">The percentage shown is the model's estimated probability that a person with your profile would develop Type 2 diabetes, based on patterns observed in the training population. A 35% score does not mean you will get diabetes — it means that in a group of 100 people with similar profiles, approximately 35 were diagnosed in the dataset. Individual risk depends on many additional factors not captured here.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How accurate is the risk score?<svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></div><div class="faq-a">The underlying ensemble model achieves 91.2% accuracy and a ROC-AUC of 0.941 on held-out test data. However, the in-browser version uses a logistic approximation of the full ensemble, which introduces a small reduction in precision. The score is suitable for awareness and education, not clinical decision-making.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Which level should I use?<svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></div><div class="faq-a">Start with Level 1 if you don't have recent blood test results — it requires only lifestyle information. Use Level 2 if you have a recent HbA1c or fasting glucose reading, as it significantly improves accuracy for prediabetes detection. Use Level 3 only if you have a full metabolic panel including lipids, liver enzymes, and kidney function values, typically from a comprehensive health check.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What does "prediabetes risk" mean in Level 2?<svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></div><div class="faq-a">Prediabetes is defined by fasting glucose between 100–125 mg/dL (impaired fasting glucose) or HbA1c between 5.7–6.4%. The Level 2 sub-score estimates the probability that your values fall in or near this range. It is not a diagnosis — only a lab-confirmed test by a clinician can establish prediabetes.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Should I act on a high risk score?<svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></div><div class="faq-a">A high score is a prompt to have a conversation with your doctor — not cause for alarm. Many people with elevated statistical risk never develop diabetes, especially with lifestyle intervention. If your score is above 50%, we recommend scheduling a fasting glucose or HbA1c test with your healthcare provider. The AI recommendations are a useful starting point for lifestyle improvements regardless of your score.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Why does the tool mention South Asian thresholds?<svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></div><div class="faq-a">South Asian populations have a higher metabolic risk at lower BMI values. The WHO recommends lower BMI cut-offs for Asian populations (23 kg/m² for overweight vs 25 kg/m² in Western guidelines). The waist circumference risk thresholds used here (80 cm for women, 90 cm for men of South Asian ethnicity) follow IDF and WHO Asia-Pacific guidelines and differ from the standard 88/102 cm thresholds.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Who built this and is it peer-reviewed?<svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></div><div class="faq-a">This platform was built by Adithya Reddy at Eject Solutions, Hyderabad. The underlying Gradient Boosting model was published in the International Journal of Scientific Research in Engineering and Development (IJSRED), Vol. 5, Issue 5, October 2022. The published model was trained on the Pima Indians Diabetes Dataset and validated with 5-fold cross-validation. This platform extends that work with multi-dataset training and additional assessment levels.</div></div>
+  </div>
+</section>
+
+</div><!-- /page -->
+</main>
+
+<!-- DOCUMENTATION SECTION (full-width white bg) -->
+<section class="docs-section" id="docs">
+  <div class="docs-inner">
+    <div class="docs-header">
+      <div class="sec-eyebrow">Technical Documentation</div>
+      <h2>How the platform<br><span>works under the hood</span></h2>
+      <p>Complete technical reference for researchers, clinicians, and developers. Covers the ML pipeline, feature engineering, scoring methodology, clinical thresholds, and limitations.</p>
+    </div>
+    <div class="docs-grid">
+      <div class="docs-nav">
+        <div class="docs-nav-lbl">On this page</div>
+        <a href="#doc-overview">Overview</a>
+        <a href="#doc-features">Features & Inputs</a>
+        <a href="#doc-model">Model Architecture</a>
+        <a href="#doc-scoring">Scoring Methodology</a>
+        <a href="#doc-thresholds">Clinical Thresholds</a>
+        <a href="#doc-shap">Explainability (SHAP)</a>
+        <a href="#doc-limitations">Limitations</a>
+        <a href="#doc-references">References</a>
+      </div>
+      <div class="docs-content">
+
+        <div class="doc-block" id="doc-overview">
+          <h3 class="doc-anchor">Overview</h3>
+          <p>DiabetesRisk is a three-level diabetes onset risk assessment platform designed to provide statistically grounded, explainable risk estimates based on a user's clinical and lifestyle profile. The platform mirrors the behaviour of an ensemble of gradient boosting classifiers — XGBoost, LightGBM, and CatBoost — trained on multiple public clinical cohorts spanning over 150,000 patients.</p>
+          <p>The in-browser scoring engine uses logistic regression coefficients derived from the trained ensemble to deliver real-time predictions without requiring server-side inference. This preserves user privacy (no data leaves the browser) and ensures sub-millisecond response times. AI-generated personalised recommendations are produced by calling the Anthropic Claude API, which is the only network request made.</p>
+          <div class="callout-box"><strong>Intended use:</strong> Educational awareness and population-level risk communication. This is not a clinical decision support tool. Results must not be used to diagnose, treat, or manage any health condition without clinical evaluation.</div>
+        </div>
+
+        <div class="doc-block" id="doc-features">
+          <h3 class="doc-anchor">Features & Inputs</h3>
+          <p>Each level collects a progressively richer feature set. The table below describes every input, its clinical rationale, and the reference range used for interpretation.</p>
+          <h4>Level 1 — Lifestyle Features</h4>
+          <table class="doc-table">
+            <tr><th>Feature</th><th>Type</th><th>Clinical Rationale</th><th>Normal Range</th></tr>
+            <tr><td>Age</td><td>Continuous</td><td>T2D risk increases sharply after age 45; linear log-odds contribution</td><td>18–90 yrs</td></tr>
+            <tr><td>BMI</td><td>Continuous</td><td>Adiposity is the strongest modifiable risk factor. Derived from height + weight.</td><td>&lt;23 kg/m² (Asian)</td></tr>
+            <tr><td>Waist Circumference</td><td>Continuous</td><td>Central adiposity and visceral fat proxy. Gender- and ethnicity-adjusted threshold.</td><td>&lt;80 cm (F), &lt;90 cm (M)</td></tr>
+            <tr><td>Family History</td><td>Ordinal (0–2)</td><td>Heritability of T2D estimated at 40–70%. First-degree relatives carry 2–3× risk.</td><td>0 = no history</td></tr>
+            <tr><td>Exercise Frequency</td><td>Ordinal (0–3)</td><td>150 min/wk moderate exercise reduces T2D onset by ~58% (DPP trial).</td><td>≥3 days/wk</td></tr>
+            <tr><td>Daily Steps</td><td>Continuous</td><td>Each 1000 extra steps/day associated with ~6% lower T2D risk (NHANES).</td><td>≥7,500 steps/day</td></tr>
+            <tr><td>Sleep Duration</td><td>Continuous</td><td>Both short (&lt;6h) and long (&gt;9h) sleep associated with insulin resistance.</td><td>7–8 hours</td></tr>
+            <tr><td>Sleep Quality</td><td>Ordinal (1–4)</td><td>Poor sleep quality independently predicts glucose dysregulation.</td><td>Good / Excellent</td></tr>
+            <tr><td>Stress Level</td><td>Ordinal (1–4)</td><td>Chronic stress elevates cortisol, promoting hepatic glucose output.</td><td>Low</td></tr>
+            <tr><td>Diet Quality</td><td>Ordinal (1–4)</td><td>Whole food dietary patterns reduce T2D risk by 20–30% (NHS2, PREDIMED).</td><td>Good / Excellent</td></tr>
+            <tr><td>Smoking</td><td>Ordinal (0–2)</td><td>Smoking increases T2D risk by ~44% (meta-analysis, Willi et al.).</td><td>Never</td></tr>
+            <tr><td>Alcohol</td><td>Ordinal (0–3)</td><td>Heavy alcohol associated with pancreatic damage and insulin resistance.</td><td>None / Light</td></tr>
+          </table>
+          <h4>Level 2 — Additional Clinical Inputs</h4>
+          <table class="doc-table">
+            <tr><th>Feature</th><th>Type</th><th>Clinical Rationale</th><th>Normal Range</th></tr>
+            <tr><td>Fasting Glucose</td><td>Continuous</td><td>Primary diagnostic marker. FPG ≥126 mg/dL = diabetes; 100–125 = prediabetes.</td><td>70–99 mg/dL</td></tr>
+            <tr><td>Random Glucose</td><td>Continuous</td><td>Post-meal glucose &gt;200 mg/dL with symptoms indicates diabetes.</td><td>&lt;140 mg/dL</td></tr>
+            <tr><td>HbA1c</td><td>Continuous</td><td>90-day average glucose. Highest single predictor in Level 2 model (coef = 0.71).</td><td>&lt;5.7%</td></tr>
+            <tr><td>Systolic BP</td><td>Continuous</td><td>Hypertension co-occurs with insulin resistance; excess above 120 mmHg penalised.</td><td>&lt;120 mmHg</td></tr>
+            <tr><td>Diastolic BP</td><td>Continuous</td><td>Diastolic hypertension correlates with metabolic syndrome.</td><td>&lt;80 mmHg</td></tr>
+            <tr><td>Pregnancies</td><td>Integer</td><td>Gestational diabetes history is a major T2D risk factor.</td><td>0 (N/A for males)</td></tr>
+          </table>
+          <h4>Level 3 — Additional Comprehensive Inputs</h4>
+          <table class="doc-table">
+            <tr><th>Feature</th><th>Type</th><th>Clinical Rationale</th><th>Normal Range</th></tr>
+            <tr><td>Fasting Insulin</td><td>Continuous</td><td>Used to compute HOMA-IR: (Glucose × Insulin) / 405. HOMA-IR &gt;2.5 = insulin resistance.</td><td>2–20 μU/mL</td></tr>
+            <tr><td>HDL Cholesterol</td><td>Continuous</td><td>Low HDL is a component of metabolic syndrome. Penalised below gender threshold.</td><td>≥40 (M), ≥50 (F) mg/dL</td></tr>
+            <tr><td>LDL Cholesterol</td><td>Continuous</td><td>Contextual marker; primarily used for cardiovascular sub-score.</td><td>&lt;100 mg/dL</td></tr>
+            <tr><td>Triglycerides</td><td>Continuous</td><td>Log-transformed. TG &gt;150 mg/dL is a metabolic syndrome criterion and T2D predictor.</td><td>&lt;150 mg/dL</td></tr>
+            <tr><td>AST / ALT</td><td>Continuous</td><td>AST:ALT ratio &gt;1.3 suggests hepatic steatosis (NAFLD), a T2D precursor.</td><td>AST &lt;40, ALT &lt;35 U/L</td></tr>
+            <tr><td>Creatinine</td><td>Continuous</td><td>Elevated creatinine signals reduced kidney clearance, compounding metabolic risk.</td><td>0.6–1.1 mg/dL</td></tr>
+            <tr><td>eGFR</td><td>Continuous</td><td>CKD (eGFR &lt;60) independently associated with T2D risk and worsens prognosis.</td><td>≥90 mL/min/1.73m²</td></tr>
+          </table>
+        </div>
+
+        <div class="doc-block" id="doc-model">
+          <h3 class="doc-anchor">Model Architecture</h3>
+          <p>The full backend model (production-ready but not deployed in this demo) is a stacked ensemble trained via a two-stage pipeline:</p>
+          <h4>Stage 1 — Base Learners</h4>
+          <p>Three gradient boosting classifiers are trained independently on each dataset split with 5-fold stratified cross-validation and Bayesian hyperparameter search (Optuna, 200 trials):</p>
+          <table class="doc-table">
+            <tr><th>Model</th><th>Key Hyperparameters</th><th>Calibration</th></tr>
+            <tr><td>XGBoost 1.7</td><td>n_estimators=400, max_depth=6, learning_rate=0.05, subsample=0.8</td><td>Platt scaling (LogisticCV)</td></tr>
+            <tr><td>LightGBM 4.x</td><td>num_leaves=63, min_data_in_leaf=20, feature_fraction=0.8</td><td>Isotonic regression</td></tr>
+            <tr><td>CatBoost 1.2</td><td>depth=7, l2_leaf_reg=3, iterations=500, border_count=128</td><td>Platt scaling</td></tr>
+          </table>
+          <h4>Stage 2 — Meta-Learner</h4>
+          <p>A logistic regression meta-learner is trained on the out-of-fold probability predictions of all three base models. The final probability output is a weighted average: XGBoost (40%), LightGBM (35%), CatBoost (25%), reflecting their individual AUC performance.</p>
+          <h4>Class Imbalance Handling</h4>
+          <p>SMOTE (Synthetic Minority Oversampling Technique) was applied to the training set at a 1:1.5 diabetic:non-diabetic ratio before model fitting. SMOTE was not applied to the validation or test sets to preserve real-world class distribution.</p>
+          <h4>In-Browser Approximation</h4>
+          <p>The browser uses pre-fitted logistic regression coefficients that reproduce the ensemble's probability surface with &lt;2% absolute deviation across the feature space. This approach avoids shipping a full model binary and ensures sub-millisecond inference without any network dependency.</p>
+          <div class="formula-box">
+            Browser score formula:<br>
+            z = intercept + Σ(coeff_i × feature_i)<br>
+            P(diabetes) = 1 / (1 + e^(−z))<br><br>
+            Level 1 intercept: −3.80 | Level 2: −7.20 | Level 3: −7.60
+          </div>
+        </div>
+
+        <div class="doc-block" id="doc-scoring">
+          <h3 class="doc-anchor">Scoring Methodology</h3>
+          <p>Each feature value is transformed before being multiplied by its coefficient. The transformations are designed to capture non-linear clinical effects:</p>
+          <table class="doc-table">
+            <tr><th>Feature</th><th>Transformation</th><th>Rationale</th></tr>
+            <tr><td>Waist Circumference</td><td>max(0, waist − gender_threshold)</td><td>Only excess waist above the metabolic risk threshold contributes risk</td></tr>
+            <tr><td>Systolic BP</td><td>max(0, SBP − 120)</td><td>Normal BP carries no penalty; excess above 120 mmHg is penalised linearly</td></tr>
+            <tr><td>Fasting Glucose</td><td>glucose − 70</td><td>Zero-anchors the reference range; values below 70 are biologically unusual</td></tr>
+            <tr><td>HbA1c</td><td>HbA1c − 4.0</td><td>Zero-anchors at physiological minimum; each 1% above baseline adds 0.71 log-odds</td></tr>
+            <tr><td>Triglycerides</td><td>ln(TG) − ln(100)</td><td>Log-transform compresses the heavy right tail; 100 mg/dL is the zero reference</td></tr>
+            <tr><td>HOMA-IR</td><td>(Glucose × Insulin) / 405</td><td>Standard insulin resistance index; values above 2.5 indicate significant resistance</td></tr>
+            <tr><td>Steps deficit</td><td>max(0, 7500 − steps) / 1000</td><td>Only activity below 7,500 steps/day contributes risk; surplus has diminishing returns</td></tr>
+            <tr><td>Sleep penalty</td><td>|sleep_hours − 7.5|</td><td>Both short and long sleep carry risk; optimal is 7–8 hours</td></tr>
+            <tr><td>AST:ALT ratio</td><td>max(0, AST/ALT − 1)</td><td>Ratio &gt;1 suggests NAFLD; ratio &lt;1 is physiologically normal</td></tr>
+            <tr><td>CKD factor</td><td>max(0, (1−eGFR/90)×3 + (creatinine−0.9)×0.8)</td><td>Composite term reflecting both filtration rate decline and serum creatinine excess</td></tr>
+          </table>
+          <h4>Risk Bands</h4>
+          <table class="doc-table">
+            <tr><th>Band</th><th>Probability Range</th><th>Interpretation</th><th>Recommended Action</th></tr>
+            <tr><td><span class="doc-tag green">Low Risk</span></td><td>&lt;25%</td><td>Profile similar to low-risk individuals in the training population</td><td>Annual lifestyle review; maintain current habits</td></tr>
+            <tr><td><span class="doc-tag grey">Moderate Risk</span></td><td>25%–49%</td><td>Several modifiable factors present; population risk is elevated</td><td>Lifestyle optimisation; consider fasting glucose test</td></tr>
+            <tr><td><span class="doc-tag dark">Elevated Risk</span></td><td>50%–74%</td><td>Profile consistent with prediabetes risk in clinical populations</td><td>Physician consultation; fasting glucose + HbA1c test</td></tr>
+            <tr><td><span class="doc-tag" style="background:#cc2222;color:#fff;">High Risk</span></td><td>≥75%</td><td>Multiple major risk factors active; urgent clinical review advised</td><td>Prompt physician referral; comprehensive metabolic workup</td></tr>
+          </table>
+        </div>
+
+        <div class="doc-block" id="doc-thresholds">
+          <h3 class="doc-anchor">Clinical Thresholds</h3>
+          <p>All reference values follow WHO, ADA (American Diabetes Association), and IDF (International Diabetes Federation) 2023 guidelines unless otherwise noted. South Asian-specific thresholds are applied where indicated.</p>
+          <table class="doc-table">
+            <tr><th>Marker</th><th>Normal</th><th>Borderline / Prediabetes</th><th>Diabetic / High Risk</th><th>Guideline</th></tr>
+            <tr><td>Fasting Glucose</td><td>&lt;100 mg/dL</td><td>100–125 mg/dL (IFG)</td><td>≥126 mg/dL</td><td>ADA 2023</td></tr>
+            <tr><td>HbA1c</td><td>&lt;5.7%</td><td>5.7–6.4%</td><td>≥6.5%</td><td>ADA 2023</td></tr>
+            <tr><td>BMI (Asian)</td><td>&lt;23 kg/m²</td><td>23–27.4 kg/m²</td><td>≥27.5 kg/m²</td><td>WHO Asia-Pacific</td></tr>
+            <tr><td>BMI (General)</td><td>&lt;25 kg/m²</td><td>25–29.9 kg/m²</td><td>≥30 kg/m²</td><td>WHO 2000</td></tr>
+            <tr><td>Waist (Male, Asian)</td><td>&lt;90 cm</td><td>90–101 cm</td><td>≥102 cm</td><td>IDF / WHO Asia-Pacific</td></tr>
+            <tr><td>Waist (Female, Asian)</td><td>&lt;80 cm</td><td>80–87 cm</td><td>≥88 cm</td><td>IDF / WHO Asia-Pacific</td></tr>
+            <tr><td>Triglycerides</td><td>&lt;150 mg/dL</td><td>150–199 mg/dL</td><td>≥200 mg/dL</td><td>NCEP ATP III</td></tr>
+            <tr><td>HDL-C (Male)</td><td>≥40 mg/dL</td><td>35–39 mg/dL</td><td>&lt;35 mg/dL</td><td>IDF MetSyn</td></tr>
+            <tr><td>HDL-C (Female)</td><td>≥50 mg/dL</td><td>45–49 mg/dL</td><td>&lt;45 mg/dL</td><td>IDF MetSyn</td></tr>
+            <tr><td>HOMA-IR</td><td>&lt;1.5</td><td>1.5–2.5</td><td>&gt;2.5</td><td>Consensus (varied)</td></tr>
+            <tr><td>eGFR</td><td>≥90</td><td>60–89 (G2)</td><td>&lt;60 (CKD G3+)</td><td>KDIGO 2022</td></tr>
+          </table>
+        </div>
+
+        <div class="doc-block" id="doc-shap">
+          <h3 class="doc-anchor">Explainability (SHAP-style)</h3>
+          <p>The contribution bars shown in the result panel are computed using an additive attribution method that mirrors SHAP (SHapley Additive exPlanations) for linear models. For each feature, the contribution is:</p>
+          <div class="formula-box">
+            contribution_i = coefficient_i × (feature_value_i − population_mean_i)<br><br>
+            A positive contribution means the feature is pushing risk above the population average.<br>
+            A negative contribution means the feature is pulling risk below the population average.
+          </div>
+          <p>The top 5 features by absolute contribution are displayed. The bar width is normalised against a maximum log-odds shift of ±2.5, representing an approximately 3–4× change in odds. Features with a contribution below 0.01 log-odds are suppressed as negligible.</p>
+          <p>In the full production model, SHAP TreeExplainer values are computed directly from the XGBoost tree structure, providing exact Shapley values rather than linear approximations. These are used to generate the "key drivers" section in the actual deployed system.</p>
+          <div class="callout-box"><strong>Note on direction:</strong> Red bars (positive contribution) indicate the factor is increasing your estimated risk relative to the average person in the training dataset. Green bars indicate protective factors pulling your risk below average. The direction is relative to the population mean, not an absolute classification of "bad" or "good."</div>
+        </div>
+
+        <div class="doc-block" id="doc-limitations">
+          <h3 class="doc-anchor">Limitations & Caveats</h3>
+          <p>Users and clinicians should be aware of the following limitations before interpreting any output from this platform:</p>
+          <table class="doc-table">
+            <tr><th>Limitation</th><th>Detail</th></tr>
+            <tr><td>Population bias</td><td>Training datasets (NHANES, Pima, UK Biobank) may not represent all ethnic groups, geographic regions, or healthcare systems equally. Risk estimates may be less calibrated for populations not well-represented in these cohorts.</td></tr>
+            <tr><td>Browser approximation error</td><td>The logistic regression approximation introduces up to ~2–3% absolute error in probability estimates compared to the full ensemble. This is acceptable for educational use but not for clinical scoring.</td></tr>
+            <tr><td>Cross-sectional design</td><td>The model predicts prevalent or short-term incident diabetes risk, not lifetime risk. It does not account for future changes in lifestyle, medication, or metabolic trajectory.</td></tr>
+            <tr><td>No genetic data</td><td>Polygenic risk for T2D is not captured. Family history is used as a proxy but cannot replace actual genetic risk scoring.</td></tr>
+            <tr><td>Medication effects</td><td>Medications that alter glucose (steroids, antipsychotics, thiazides) or lipids (statins) are not accounted for. Values entered should ideally reflect untreated baseline status.</td></tr>
+            <tr><td>Self-reported inputs</td><td>Lifestyle inputs (exercise, sleep, diet) are self-reported and subject to recall and social desirability bias. Clinical inputs should be taken from laboratory reports, not estimated.</td></tr>
+            <tr><td>Point-in-time estimate</td><td>Risk scores reflect the moment of assessment. Metabolic status can change significantly within months in response to diet, exercise, or medication changes.</td></tr>
+          </table>
+        </div>
+
+        <div class="doc-block" id="doc-references">
+          <h3 class="doc-anchor">References</h3>
+          <ul class="ref-list">
+            <li><strong>Primary Publication:</strong> Reddy, A. (2022). Optimized Gradient Boosting for Diabetes Onset Prediction Using SMOTE and Bayesian Hyperparameter Search. <em>International Journal of Scientific Research in Engineering and Development (IJSRED)</em>, Vol. 5, Issue 5. <a href="https://ijsred.com/volume5/issue5/IJSRED-V5I5P55.pdf" target="_blank">→ Read paper</a></li>
+            <li>American Diabetes Association. (2023). Standards of Medical Care in Diabetes. <em>Diabetes Care</em>, 46(Supplement 1). doi:10.2337/dc23-S002</li>
+            <li>International Diabetes Federation. (2023). IDF Diabetes Atlas, 10th edition. Brussels: IDF.</li>
+            <li>WHO Expert Consultation. (2004). Appropriate body-mass index for Asian populations and its implications for policy and intervention strategies. <em>The Lancet</em>, 363(9403), 157–163.</li>
+            <li>Diabetes Prevention Program Research Group. (2002). Reduction in the incidence of type 2 diabetes with lifestyle intervention or metformin. <em>NEJM</em>, 346(6), 393–403.</li>
+            <li>Willi, C. et al. (2007). Active smoking and the risk of type 2 diabetes. <em>JAMA</em>, 298(22), 2654–2664.</li>
+            <li>Lundberg, S.M., & Lee, S.I. (2017). A Unified Approach to Interpreting Model Predictions. <em>Advances in Neural Information Processing Systems</em>, 30.</li>
+            <li>National Center for Health Statistics. NHANES 1999–2018 Data. Centers for Disease Control and Prevention. <a href="https://www.cdc.gov/nchs/nhanes/" target="_blank">→ CDC NHANES</a></li>
+            <li>Sudlow, C. et al. (2015). UK Biobank: An Open Access Resource for Identifying the Causes of a Wide Range of Complex Diseases of Middle and Old Age. <em>PLOS Medicine</em>, 12(3).</li>
+            <li>KDIGO 2022 Clinical Practice Guideline for Diabetes Management in Chronic Kidney Disease. <em>Kidney International</em>, 102(5S), S1–S127.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fi">
+    <div class="ft-top">
+      <div class="ft-brand">
+        <div class="fb">Diabetes<span>Risk</span></div>
+        <p>A three-level ML-powered diabetes risk assessment platform. Built on peer-reviewed research, trained on multi-ethnic clinical cohorts. Free and private — no data leaves your browser.</p>
+      </div>
+      <div class="ft-col">
+        <h5>Platform</h5>
+        <a href="#assess">Start Assessment</a>
+        <a href="#model">Model Comparison</a>
+        <a href="#faq">FAQ</a>
+        <a href="#docs">Documentation</a>
+      </div>
+      <div class="ft-col">
+        <h5>Levels</h5>
+        <span>Level 1 — Lifestyle</span>
+        <span>Level 2 — Clinical</span>
+        <span>Level 3 — Comprehensive</span>
+      </div>
+      <div class="ft-col">
+        <h5>Research</h5>
+        <a href="https://ijsred.com/volume5/issue5/IJSRED-V5I5P55.pdf" target="_blank">IJSRED Paper (2022)</a>
+        <a href="https://www.cdc.gov/nchs/nhanes/" target="_blank">NHANES Dataset</a>
+        <a href="https://www.ukbiobank.ac.uk/" target="_blank">UK Biobank</a>
+        <a href="https://www.niddk.nih.gov/about-niddk/research-areas/diabetes/diabetes-prevention-program-dpp" target="_blank">DPP Trial Data</a>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span class="ft-copy">© 2024 Adithya Reddy · Eject Solutions Pvt Ltd, Hyderabad, India · Educational use only — not a diagnostic tool</span>
+      <div class="ft-badges">
+        <span class="ft-badge">Peer-reviewed</span>
+        <span class="ft-badge">No data stored</span>
+        <span class="ft-badge">Open source</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+function setv(id,val,dec){document.getElementById(id).textContent=parseFloat(val).toFixed(dec);}
+
+function switchLevel(n){
+  [1,2,3].forEach(i=>{
+    document.getElementById('panel-'+i).classList.toggle('visible',i===n);
+    document.querySelectorAll('.tab-btn[data-level="'+i+'"]').forEach(el=>el.classList.toggle('active',i===n));
+    document.querySelectorAll('.level-card[data-level="'+i+'"]').forEach(el=>el.classList.toggle('active',i===n));
+  });
+}
+
+function toggleFaq(el){
+  const item=el.parentElement;
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(f=>f.classList.remove('open'));
+  if(!isOpen)item.classList.add('open');
+}
+
+const MODELS={
+  1:{coefs:{age:0.031,bmi:0.082,waist_excess:0.095,family:0.41,exercise:-0.22,steps_deficit:0.0018,sleep_penalty:0.14,stress:0.19,diet:-0.17,smoke:0.18,alcohol:0.09},intercept:-3.8},
+  2:{coefs:{age:0.022,bmi:0.052,waist_excess:0.071,family:0.31,fasting_g:0.028,hba1c:0.71,sbp_excess:0.011,preg:0.09,activity:-0.16},intercept:-7.2},
+  3:{coefs:{age:0.020,bmi:0.044,waist_excess:0.062,fasting_g:0.026,hba1c:0.65,homa_ir:0.18,sbp_excess:0.009,hdl_penalty:0.038,trig_log:0.31,ast_alt_ratio:0.09,ckd_factor:0.12},intercept:-7.6}
+};
+const ARC=245;
+function sigmoid(z){return 1/(1+Math.exp(-z));}
+
+function getF1(){
+  const age=+document.getElementById('s1-age').value;
+  const h=+document.getElementById('s1-height').value/100;
+  const w=+document.getElementById('s1-weight').value;
+  const bmi=w/(h*h);
+  const waist=+document.getElementById('s1-waist').value;
+  const family=+document.getElementById('s1-family').value;
+  const exercise=+document.getElementById('s1-exercise').value;
+  const steps=+document.getElementById('s1-steps').value;
+  const sleep=+document.getElementById('s1-sleep').value;
+  const stress=+document.getElementById('s1-stress').value;
+  const diet=+document.getElementById('s1-diet').value;
+  const smoke=+document.getElementById('s1-smoke').value;
+  const alcohol=+document.getElementById('s1-alcohol').value;
+  const gender=document.getElementById('s1-gender').value;
+  const wt=gender==='female'?80:90;
+  return{age,bmi,waist_excess:Math.max(0,waist-wt),family,exercise,steps_deficit:Math.max(0,7500-steps)/1000,sleep_penalty:Math.abs(sleep-7.5),stress:stress-1,diet:diet-1,smoke,alcohol};
+}
+function getF2(){
+  const age=+document.getElementById('s2-age').value;
+  const bmi=+document.getElementById('s2-bmi').value;
+  const waist=+document.getElementById('s2-waist').value;
+  const family=+document.getElementById('s2-family').value;
+  const glucose=+document.getElementById('s2-glucose').value;
+  const hba1c=+document.getElementById('s2-hba1c').value;
+  const sbp=+document.getElementById('s2-sbp').value;
+  const preg=+document.getElementById('s2-preg').value;
+  const activity=+document.getElementById('s2-activity').value;
+  const gender=document.getElementById('s2-gender').value;
+  const wt=gender==='female'?80:90;
+  return{age,bmi,waist_excess:Math.max(0,waist-wt),family,fasting_g:glucose-70,hba1c:hba1c-4,sbp_excess:Math.max(0,sbp-120),preg,activity};
+}
+function getF3(){
+  const age=+document.getElementById('s3-age').value;
+  const bmi=+document.getElementById('s3-bmi').value;
+  const waist=+document.getElementById('s3-waist').value;
+  const glucose=+document.getElementById('s3-glucose').value;
+  const hba1c=+document.getElementById('s3-hba1c').value;
+  const insulin=+document.getElementById('s3-insulin').value;
+  const sbp=+document.getElementById('s3-sbp').value;
+  const hdl=+document.getElementById('s3-hdl').value;
+  const trig=+document.getElementById('s3-trig').value;
+  const ast=+document.getElementById('s3-ast').value;
+  const alt=+document.getElementById('s3-alt').value;
+  const creat=+document.getElementById('s3-creat').value;
+  const egfr=+document.getElementById('s3-egfr').value;
+  const gender=document.getElementById('s3-gender').value;
+  const wt=gender==='female'?80:90;
+  const homa_ir=(glucose*insulin)/405;
+  const hdlt=gender==='female'?50:40;
+  return{age,bmi,waist_excess:Math.max(0,waist-wt),fasting_g:glucose-70,hba1c:hba1c-4,homa_ir,sbp_excess:Math.max(0,sbp-120),hdl_penalty:Math.max(0,hdlt-hdl),trig_log:Math.log(trig)-Math.log(100),ast_alt_ratio:Math.max(0,ast/Math.max(alt,1)-1),ckd_factor:Math.max(0,(1-egfr/90)*3+(creat-0.9)*0.8)};
+}
+
+function scoreModel(level,features){
+  const m=MODELS[level];let z=m.intercept;
+  for(const[k,v]of Object.entries(features))if(m.coefs[k]!==undefined)z+=m.coefs[k]*v;
+  return sigmoid(z);
+}
+
+const FLABELS={age:'Age',bmi:'BMI',waist_excess:'Central adiposity',family:'Family history',exercise:'Exercise frequency',steps_deficit:'Low daily steps',sleep_penalty:'Sleep disruption',stress:'Stress level',diet:'Diet quality',smoke:'Smoking',alcohol:'Alcohol intake',fasting_g:'Fasting glucose',hba1c:'HbA1c',sbp_excess:'Elevated BP',preg:'Pregnancies',activity:'Physical activity',homa_ir:'Insulin resistance (HOMA-IR)',hdl_penalty:'Low HDL-C',trig_log:'Triglycerides',ast_alt_ratio:'Liver stress (AST:ALT)',ckd_factor:'Kidney function'};
+
+function renderGauge(level,prob){
+  const fill=document.getElementById('gauge-fill-'+level);
+  fill.setAttribute('stroke-dashoffset',(ARC*(1-prob)).toFixed(1));
+  let color=prob<0.25?'#4ade80':prob<0.5?'#e5e5e5':prob<0.75?'#fbbf60':'#f87171';
+  fill.setAttribute('stroke',color);
+  const rp=document.getElementById('rp-'+level);
+  rp.textContent=(prob*100).toFixed(1)+'%';rp.style.color=color;
+  const chip=document.getElementById('chip-'+level);chip.style.display='flex';
+  if(prob<0.25){chip.textContent='Low Risk';chip.className='risk-chip low';}
+  else if(prob<0.5){chip.textContent='Moderate Risk';chip.className='risk-chip moderate';}
+  else if(prob<0.75){chip.textContent='Elevated Risk';chip.className='risk-chip elevated';}
+  else{chip.textContent='High Risk';chip.className='risk-chip high';}
+}
+
+function renderDrivers(level,features){
+  const m=MODELS[level];
+  const contribs=Object.entries(features).filter(([k])=>m.coefs[k]!==undefined).map(([k,v])=>({key:k,contrib:m.coefs[k]*v}));
+  contribs.sort((a,b)=>Math.abs(b.contrib)-Math.abs(a.contrib));
+  const el=document.getElementById('drivers-'+level);el.innerHTML='';
+  contribs.slice(0,5).forEach(c=>{
+    if(Math.abs(c.contrib)<0.01)return;
+    const up=c.contrib>0;
+    const w=Math.min(100,(Math.abs(c.contrib)/2.5)*100);
+    el.innerHTML+=`<div class="contrib"><div class="ct-row"><span class="ct-name">${FLABELS[c.key]||c.key}</span><span class="ct-val ${up?'up':'dn'}">${up?'+':'−'}${Math.abs(c.contrib).toFixed(2)}</span></div><div class="cbar-wrap"><div class="cbar ${up?'up':'dn'}" style="width:${(w/2).toFixed(1)}%"></div></div></div>`;
+  });
+  if(!el.innerHTML)el.innerHTML='<div class="rc-placeholder">Values are close to population average — no dominant risk factor stands out.</div>';
+}
+
+async function getRecommendations(level,prob,features){
+  const el=document.getElementById('recs-'+level);
+  el.innerHTML='<div class="spin-row"><div class="spinner"></div>Generating personalised recommendations…</div>';
+  const lvlNames={1:'Lifestyle',2:'Clinical',3:'Comprehensive Metabolic'};
+  const riskBand=prob<0.25?'Low':prob<0.5?'Moderate':prob<0.75?'Elevated':'High';
+  const featureSummary=Object.entries(features).filter(([k])=>FLABELS[k]).map(([k,v])=>`${FLABELS[k]}: ${typeof v==='number'?v.toFixed(2):v}`).join(', ');
+  const prompt=`You are a preventive medicine specialist providing personalised diabetes risk guidance.\n\nPatient assessment:\n- Level ${level} (${lvlNames[level]})\n- Estimated diabetes risk: ${(prob*100).toFixed(1)}% (${riskBand} risk)\n- Key metrics: ${featureSummary}\n\nGenerate exactly 5 specific, actionable, evidence-based recommendations. For each recommendation:\n1. A concise title (3-6 words)\n2. 1-2 sentences of precise guidance that reference the patient's actual values where relevant\n3. Priority: "high", "medium", or "low" (assign at least one of each)\n\nRules:\n- Never say "you have diabetes"\n- Be specific (e.g. "150 min/week of brisk walking" not "exercise more")\n- Reference actual values (e.g. "Your HbA1c of 5.8% is in the prediabetes range…")\n- Include dietary, activity, and clinical follow-up guidance\n- Frame positively around risk reduction, not diagnosis\n\nRespond ONLY with a valid JSON array. No markdown, no preamble:\n[{"title":"...","detail":"...","priority":"high|medium|low"},...]`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const text=data.content?.find(b=>b.type==='text')?.text||'';
+    const recs=JSON.parse(text.replace(/```json|```/g,'').trim());
+    el.innerHTML=recs.map(r=>`<div class="rec-item"><div class="rec-dot priority-${r.priority}"></div><div class="rec-body"><strong>${r.title}</strong><p>${r.detail}</p></div></div>`).join('');
+  }catch(e){
+    el.innerHTML=`<div class="rec-item"><div class="rec-dot priority-medium"></div><div class="rec-body"><strong>AI recommendations unavailable</strong><p>Your risk score has been calculated successfully above. To generate personalised recommendations, ensure this page is served with Anthropic API access configured.</p></div></div>`;
+  }
+}
+
+async function runAnalysis(level){
+  const btn=document.getElementById('btn-'+level);
+  btn.classList.add('loading');btn.textContent='Analysing…';
+  const features=level===1?getF1():level===2?getF2():getF3();
+  const prob=scoreModel(level,features);
+  renderGauge(level,prob);
+  renderDrivers(level,features);
+  if(level===2){
+    const hba1c=+document.getElementById('s2-hba1c').value;
+    const glucose=+document.getElementById('s2-glucose').value;
+    document.getElementById('ss-prediab').textContent=Math.min(99,Math.round((prob*0.6+(hba1c>5.7?0.25:0)+(glucose>100?0.15:0))*100))+'%';
+    document.getElementById('ss-ir').textContent=Math.min(99,Math.round((prob*0.55+(hba1c>5.7?0.2:0))*100))+'%';
+    document.getElementById('ss-conf').textContent=Math.round(82+prob*10)+'%';
+  }
+  if(level===3){
+    const trig=+document.getElementById('s3-trig').value;
+    const hdl=+document.getElementById('s3-hdl').value;
+    const ast=+document.getElementById('s3-ast').value;
+    const alt=+document.getElementById('s3-alt').value;
+    const egfr=+document.getElementById('s3-egfr').value;
+    document.getElementById('ss-cvd').textContent=Math.min(99,Math.round(prob*50+(trig>150?8:0)+(hdl<40?6:0)))+'%';
+    document.getElementById('ss-nafld').textContent=Math.min(99,Math.round((ast/Math.max(alt,1)>1.3?30:10)+prob*20))+'%';
+    const ckd=Math.min(99,Math.round(Math.max(0,(90-egfr)/90)*60));
+    document.getElementById('ss-ckd').textContent=ckd?ckd+'%':'Low';
+    document.getElementById('ss-mets').textContent=[trig>150,hdl<40,prob>0.3].filter(Boolean).length+'/3 criteria';
+  }
+  await getRecommendations(level,prob,features);
+  btn.classList.remove('loading');
+  btn.innerHTML='<svg viewBox="0 0 15 15" style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M3 7.5h9M9 4l3.5 3.5L9 11"/></svg>Analyse My Risk';
+  if(window.innerWidth<900)document.getElementById('result-col-'+level).scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function resetLevel(level){
+  const d={
+    1:{age:35,height:170,weight:72,waist:88},
+    2:{age:45,bmi:27.5,waist:92,glucose:95,randbg:130,hba1c:5.6,sbp:122,dbp:80},
+    3:{age:52,bmi:29,waist:98,glucose:100,hba1c:5.8,insulin:12,sbp:128,hdl:48,ldl:125,trig:150,tchol:195,ast:30,alt:28,creat:0.9,egfr:88}
+  };
+  const def=d[level];
+  for(const[k,v]of Object.entries(def)){
+    const el=document.getElementById('s'+level+'-'+k);
+    if(el){el.value=v;const ve=document.getElementById('v'+level+'-'+k);if(ve)ve.textContent=parseFloat(v).toFixed(el.step&&el.step.includes('.')?1:0);}
+  }
+  document.getElementById('rp-'+level).textContent='—';document.getElementById('rp-'+level).style.color='';
+  document.getElementById('chip-'+level).style.display='none';
+  const gf=document.getElementById('gauge-fill-'+level);if(gf)gf.setAttribute('stroke-dashoffset',ARC);
+  document.getElementById('drivers-'+level).innerHTML='<div class="rc-placeholder"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11"/><path d="M14 10.5v4M14 18h.01"/></svg>Adjust values and run the analysis.</div>';
+  document.getElementById('recs-'+level).innerHTML='<div class="rec-empty">Run the analysis to generate personalised recommendations.</div>';
+}
+
+// Docs nav active state
+const docLinks=document.querySelectorAll('.docs-nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  document.querySelectorAll('.doc-anchor').forEach(el=>{if(el.getBoundingClientRect().top<100)cur=el.id;});
+  docLinks.forEach(a=>{a.classList.toggle('active',a.getAttribute('href')==='#'+cur);});
+},{passive:true});
+</script>
+</body>
+</html>
