@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>DiabetesRisk Preview</title>
+<meta name="description" content="Frontend preview of the DiabetesRisk upgrade: live FINDRISC and IDRS screening, ADA glucose categories and criteria-based metabolic flags. Runs entirely in your browser.">
+<style>
+:root{
+  --bg:#f6f6f4;--surface:#fff;--ink:#111;--ink-2:#2e2e2e;--ink-3:#595959;--rule:#e3e3e0;--rule-2:#f0f0ee;
+  --accent:#000;--on-accent:#fff;--focus:#2563eb;
+  --ok:#166534;--warn:#854d0e;--bad:#b91c1c;--info:#1d4ed8;
+  --rc-bg:#0b0b0b;--rc-ink:#fafafa;--rc-muted:#b3b3b3;--rc-rule:rgba(255,255,255,.12);--rc-track:rgba(255,255,255,.1);
+  --g-good:#4ade80;--g-neutral:#e5e5e5;--g-warn:#fbbf24;--g-bad:#f87171;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;
+  --r1:8px;--r2:12px;--r3:16px;
+  --font:'Poppins',system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans',sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c0c0c;--surface:#161616;--ink:#f2f2f2;--ink-2:#d6d6d6;--ink-3:#a8a8a8;--rule:#2b2b2b;--rule-2:#1f1f1f;
+    --accent:#fff;--on-accent:#000;--focus:#93c5fd;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--info:#93c5fd;
+    --rc-bg:#121212;--rc-rule:rgba(255,255,255,.1);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c0c0c;--surface:#161616;--ink:#f2f2f2;--ink-2:#d6d6d6;--ink-3:#a8a8a8;--rule:#2b2b2b;--rule-2:#1f1f1f;
+  --accent:#fff;--on-accent:#000;--focus:#93c5fd;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--info:#93c5fd;
+  --rc-bg:#121212;--rc-rule:rgba(255,255,255,.1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.wrap{max-width:1160px;margin:0 auto;padding:0 var(--s5)}
+button{font:inherit;color:inherit;cursor:pointer}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.nav .wrap{height:60px;display:flex;align-items:center;justify-content:space-between;gap:var(--s3)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:17px;letter-spacing:-.02em}
+.brand .lite{font-weight:300;color:var(--ink-3)}
+.logo{width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center}
+.logo svg{width:16px;height:16px;stroke:var(--on-accent);fill:none;stroke-width:1.8;stroke-linecap:round}
+.nav-r{display:flex;align-items:center;gap:var(--s4)}
+.nav-r a{font-size:13px;font-weight:500;color:var(--ink-3);text-decoration:none}
+.nav-r a:hover{color:var(--ink)}
+.icon-btn{border:1px solid var(--rule);background:var(--surface);border-radius:999px;min-height:36px;padding:0 14px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+
+/* hero */
+.preview-flag{margin-top:var(--s5);display:flex;gap:var(--s3);align-items:flex-start;background:var(--surface);border:1px dashed var(--ink-3);border-radius:var(--r2);padding:var(--s3) var(--s4);font-size:13px;color:var(--ink-2)}
+.preview-flag b{color:var(--ink)}
+.hero{padding:var(--s6) 0 var(--s5)}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);margin-bottom:var(--s3)}
+.hero h1{font-size:clamp(30px,5vw,54px);font-weight:800;line-height:1.05;letter-spacing:-.035em;max-width:760px}
+.hero h1 span{font-weight:300;color:var(--ink-3)}
+.hero p{margin-top:var(--s4);max-width:620px;color:var(--ink-3)}
+.disclaimer{margin-top:var(--s4);max-width:720px;font-size:13px;color:var(--ink-2);background:var(--rule-2);border:1px solid var(--rule);border-radius:var(--r1);padding:var(--s3) var(--s4)}
+
+/* tabs */
+.assess-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--s3);margin:var(--s5) 0 var(--s4)}
+.tablist{display:flex;gap:4px;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r2);padding:4px;max-width:100%;overflow-x:auto}
+.tab{border:0;background:transparent;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:600;color:var(--ink-3);white-space:nowrap;min-height:40px;transition:background .18s var(--ease),color .18s}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--on-accent)}
+.tab:hover:not([aria-selected="true"]){background:var(--rule-2);color:var(--ink)}
+.tab small{display:block;font-size:10.5px;font-weight:500}
+.toolbar{display:flex;gap:var(--s2);flex-wrap:wrap}
+.btn{border:1px solid var(--rule);background:var(--surface);border-radius:var(--r1);min-height:40px;padding:0 14px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:transform .1s,border-color .15s}
+.btn:hover{border-color:var(--ink-3)}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:var(--s5);align-items:start}
+.panel{animation:panelIn .22s var(--ease)}
+@keyframes panelIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* inputs */
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r2)}
+.settings{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s3);padding:var(--s3) var(--s4);margin-bottom:var(--s3);font-size:13px}
+.settings .lbl{font-weight:600}
+.settings .hint{color:var(--ink-3);font-size:12px;flex-basis:100%}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:999px;padding:2px;background:var(--bg)}
+.seg button{border:0;background:transparent;border-radius:999px;padding:3px 10px;min-height:28px;min-width:28px;font-size:12px;font-weight:600;color:var(--ink-3)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.group{margin-bottom:var(--s3);overflow:hidden}
+.group h2{font-size:13px;font-weight:700;padding:var(--s3) var(--s4);border-bottom:1px solid var(--rule-2);letter-spacing:-.005em}
+.group h2 .muted{font-weight:500;color:var(--ink-3)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:var(--s4) var(--s5);padding:var(--s4)}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fhead{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);min-height:28px}
+.flabel{font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.frow{display:flex;align-items:center;gap:var(--s2)}
+.frow input[type=number]{width:96px;flex:none}
+input[type=number],select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:var(--r1);min-height:40px;padding:0 10px;width:100%}
+input[type=number]:hover,select:hover{border-color:var(--ink-3)}
+.unit{font-size:12px;color:var(--ink-3);white-space:nowrap}
+input[type=range]{width:100%;height:32px;accent-color:var(--accent);cursor:pointer;touch-action:pan-y}
+.readout{font-size:12px;color:var(--ink-3)}
+.fmsg{font-size:12px;color:var(--bad);min-height:0}
+.fmsg:empty{display:none}
+.field.invalid input[type=number]{border-color:var(--bad);box-shadow:0 0 0 1px var(--bad)}
+.checks{margin-bottom:var(--s3);padding:var(--s3) var(--s4);border-left:3px solid var(--warn);font-size:13px}
+.checks[hidden]{display:none}
+.checks h2{font-size:13px;margin-bottom:4px}
+.checks li{margin-left:18px;color:var(--ink-2)}
+
+/* results */
+.results{position:sticky;top:76px;display:flex;flex-direction:column;gap:var(--s3)}
+.urgent{border-radius:var(--r2);padding:var(--s3) var(--s4);background:color-mix(in srgb,var(--bad) 12%,var(--surface));border:1.5px solid var(--bad);font-size:13.5px}
+.urgent[hidden]{display:none}
+.urgent h2{font-size:14px;color:var(--bad);display:flex;gap:6px;align-items:center}
+.urgent li{margin:4px 0 0 18px}
+.rc{background:var(--rc-bg);color:var(--rc-ink);border-radius:var(--r3);padding:var(--s5);border:1px solid var(--rc-rule)}
+.rc-lbl{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--rc-muted)}
+.gauge{display:block;width:220px;max-width:100%;height:auto;margin:var(--s3) auto 0}
+.gauge .track{stroke:var(--rc-track)}
+.gauge .fill{transition:stroke .3s}
+.big{text-align:center;margin-top:-58px;font-size:48px;font-weight:800;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-size:16px;font-weight:500;color:var(--rc-muted);letter-spacing:0;margin-left:4px}
+.big-lbl{text-align:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--rc-muted);margin-top:6px}
+.chip{display:flex;width:fit-content;max-width:100%;margin:var(--s3) auto 0;align-items:center;gap:6px;border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.04em;text-align:center}
+.chip[data-tone="good"]{background:rgba(74,222,128,.16);color:var(--g-good)}
+.chip[data-tone="neutral"]{background:rgba(229,229,229,.14);color:var(--g-neutral)}
+.chip[data-tone="warn"]{background:rgba(251,191,36,.16);color:var(--g-warn)}
+.chip[data-tone="bad"]{background:rgba(248,113,113,.18);color:var(--g-bad)}
+.rc-sub{font-size:12.5px;color:var(--rc-muted);text-align:center;margin-top:var(--s3);line-height:1.55}
+.strip{margin-top:var(--s4)}
+.strip-bar{display:flex;gap:3px}
+.strip-seg{flex:1;height:6px;border-radius:3px;background:var(--rc-track);position:relative}
+.strip-seg.on{background:currentColor}
+.strip-lbls{display:flex;gap:3px;margin-top:6px}
+.strip-lbls span{flex:1;font-size:10.5px;color:var(--rc-muted);text-align:center;line-height:1.3}
+.strip-lbls span.on{color:var(--rc-ink);font-weight:700}
+.strip-cap{font-size:10.5px;color:var(--rc-muted);margin-top:6px;text-align:center}
+.rc hr{border:0;height:1px;background:var(--rc-rule);margin:var(--s5) 0 var(--s4)}
+.rc h3{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--rc-muted);margin-bottom:var(--s3)}
+.rc h4{font-size:11.5px;font-weight:600;color:var(--rc-muted);margin:var(--s3) 0 var(--s2)}
+.drv{margin-bottom:10px}
+.drv-row{display:flex;justify-content:space-between;gap:var(--s2);font-size:12.5px;margin-bottom:4px}
+.drv-val{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.drv-val.up{color:var(--g-bad)}.drv-val.dn{color:var(--g-good)}.drv-val.zero{color:var(--rc-muted)}
+.bar{height:6px;border-radius:3px;background:var(--rc-track);position:relative;overflow:hidden}
+.bar i{position:absolute;top:0;bottom:0;left:0;border-radius:3px;background:var(--rc-ink);transition:width .25s var(--ease),left .25s var(--ease)}
+.bar.div::after{content:'';position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--rc-muted)}
+.bar.div i.dn{background:var(--g-good)}
+.bar.div i.up{background:var(--g-bad)}
+.drv-note{font-size:11px;color:var(--rc-muted);margin-top:var(--s2)}
+
+.sec{padding:var(--s4)}
+.sec h2{font-size:14px;font-weight:700;margin-bottom:var(--s3);display:flex;align-items:center;justify-content:space-between;gap:var(--s2)}
+.sec h2 .muted{font-size:11.5px;font-weight:500;color:var(--ink-3)}
+.wi{display:grid;grid-template-columns:1fr auto;gap:2px var(--s3);padding:8px 0;border-bottom:1px solid var(--rule-2);font-size:13px}
+.wi:last-child{border-bottom:0}
+.wi b{font-weight:600}
+.wi .res{font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
+.wi .res.better{color:var(--ok)}
+.wi .res.same{color:var(--ink-3);font-weight:500}
+.wi .det{grid-column:1/-1;font-size:11.5px;color:var(--ink-3)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2)}
+.tile{border:1px solid var(--rule);border-radius:var(--r1);padding:10px 12px;min-width:0}
+.tile .t-lbl{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.tile .t-val{font-size:17px;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.tile .t-st{display:inline-flex;gap:4px;align-items:center;font-size:11.5px;font-weight:700;margin-top:2px}
+.tile .t-st[data-s="ok"]{color:var(--ok)}.tile .t-st[data-s="warn"]{color:var(--warn)}.tile .t-st[data-s="bad"]{color:var(--bad)}.tile .t-st[data-s="info"]{color:var(--info)}
+.tile .t-note{font-size:11.5px;color:var(--ink-3);margin-top:2px;line-height:1.45}
+.act{display:flex;gap:var(--s3);padding:10px 0;border-bottom:1px solid var(--rule-2)}
+.act:last-child{border-bottom:0}
+.prio{flex:none;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:2px 7px;height:fit-content;margin-top:2px;min-width:58px;text-align:center}
+.prio.high{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+.prio.medium{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.prio.low{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+.act b{display:block;font-size:13.5px}
+.act p{font-size:12.5px;color:var(--ink-2)}
+.ai p{font-size:12.5px;color:var(--ink-3);margin-top:var(--s2)}
+
+/* docs */
+.methods{margin:var(--s7) 0 var(--s6);padding-top:var(--s6);border-top:1px solid var(--rule)}
+.methods h2{font-size:clamp(22px,3vw,32px);font-weight:800;letter-spacing:-.03em;margin-bottom:var(--s3)}
+.methods h3{font-size:15px;margin:var(--s5) 0 var(--s2)}
+.methods p,.methods li{font-size:13.5px;color:var(--ink-2);max-width:820px}
+.methods ul,.methods ol{margin-left:20px}
+.methods li{margin-bottom:6px}
+.todo{font-size:11px;font-weight:700;background:var(--rule-2);border:1px solid var(--rule);border-radius:4px;padding:0 5px;color:var(--warn)}
+footer{border-top:1px solid var(--rule);padding:var(--s5) 0 var(--s7);font-size:12.5px;color:var(--ink-3)}
+
+/* mobile summary */
+.mbar{display:none}
+@media (max-width:960px){
+  .grid{grid-template-columns:1fr}
+  .results{position:static}
+  .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;align-items:center;justify-content:space-between;gap:var(--s3);background:var(--rc-bg);color:var(--rc-ink);padding:10px var(--s4) calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--rc-rule);font-size:13px}
+  .mbar b{font-size:18px;font-variant-numeric:tabular-nums}
+  .mbar .mchip{font-weight:700}
+  .mbar a{color:var(--rc-ink);font-weight:600;min-height:36px;display:inline-flex;align-items:center}
+  body{padding-bottom:72px}
+}
+@media (max-width:640px){
+  .wrap{padding:0 var(--s4)}
+  .fields{grid-template-columns:1fr}
+  .tiles{grid-template-columns:1fr}
+  .nav-r a{display:none}
+  .assess-top{flex-direction:column;align-items:stretch}
+  .tablist{display:grid;grid-template-columns:repeat(3,1fr)}
+  .tab{white-space:normal;padding:8px 6px;font-size:12px;line-height:1.3}
+  .tab small{font-size:10px}
+  .toolbar .btn{flex:1;justify-content:center;padding:0 8px;font-size:12px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+@media print{
+  .nav,.toolbar,.mbar,.seg,input[type=range],.ai,.preview-flag,.tablist,.settings{display:none!important}
+  body{background:#fff;color:#000}
+  .grid{grid-template-columns:1fr 1fr}
+  .results{position:static}
+  .rc{background:#fff;color:#000;border:1px solid #000;--rc-ink:#000;--rc-muted:#444;--rc-track:#ddd}
+}
+</style>
+</head>
+<body>
+<a href="#assess" class="sr-only">Skip to assessment</a>
+<header class="nav">
+  <div class="wrap">
+    <a href="#" class="brand"><span class="logo" aria-hidden="true"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5"/><path d="M8 5.5v2.5l1.5 1"/></svg></span><span>Diabetes<span class="lite">Risk</span></span></a>
+    <nav class="nav-r" aria-label="Primary">
+      <a href="#assess">Assess</a>
+      <a href="#methods">Methods</a>
+      <button type="button" class="icon-btn" id="theme-btn" aria-label="Colour theme: system">◐ <span>System</span></button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="preview-flag" role="note"><span aria-hidden="true">🧪</span><div><b>Frontend preview.</b> Scoring follows the proposed <b>hybrid</b> approach from PLAN.md. The AI guidance panel needs the backend (Phase 2), so it isn't active here. Rule-based guidance is shown instead. Everything runs in your browser; nothing is sent anywhere.</div></div>
+
+  <section class="hero">
+    <div class="eyebrow">Free · No sign-up · Runs in your browser</div>
+    <h1>Know your diabetes risk<br><span>and what moves it</span></h1>
+    <p>Three levels, from a no-labs questionnaire to a full metabolic panel. Results update as you type or drag. Each factor's contribution is shown, so you can see what changes the result.</p>
+    <p class="disclaimer"><strong>Not a diagnosis.</strong> This is a screening and education tool. It estimates risk and flags values worth discussing with a clinician. It cannot tell you whether you have diabetes, and only laboratory testing can.</p>
+  </section>
+
+  <section id="assess" aria-labelledby="assess-h">
+    <h2 id="assess-h" class="sr-only">Risk assessment</h2>
+    <div class="assess-top">
+      <div class="tablist" role="tablist" aria-label="Assessment level">
+        <button class="tab" role="tab" id="tab-1" aria-controls="panel" data-level="1">Level 1 · Lifestyle<small>No labs needed</small></button>
+        <button class="tab" role="tab" id="tab-2" aria-controls="panel" data-level="2">Level 2 · Clinical<small>Glucose, HbA1c, BP</small></button>
+        <button class="tab" role="tab" id="tab-3" aria-controls="panel" data-level="3">Level 3 · Comprehensive<small>Lipids, liver, kidney</small></button>
+      </div>
+      <div class="toolbar">
+        <button type="button" class="btn" id="reset-btn">↺ Reset level</button>
+        <button type="button" class="btn" id="copy-btn">🔗 Copy link</button>
+        <button type="button" class="btn" id="print-btn">⎙ Print / PDF</button>
+      </div>
+    </div>
+
+    <div id="panel" role="tabpanel" class="panel" tabindex="-1">
+      <div class="grid">
+        <div>
+          <div class="card settings" role="group" aria-labelledby="cut-lbl">
+            <span class="lbl" id="cut-lbl">BMI &amp; waist cut-offs</span>
+            <span class="seg" id="cut-seg">
+              <button type="button" data-cut="asian">Asian</button>
+              <button type="button" data-cut="general">General</button>
+            </span>
+            <span class="hint" id="cut-hint"></span>
+          </div>
+          <div class="card checks" id="checks" hidden><h2>Check these values</h2><ul id="checks-list"></ul></div>
+          <form id="inputs" novalidate></form>
+        </div>
+
+        <aside class="results" id="results" aria-labelledby="res-h">
+          <div class="urgent" id="urgent" hidden><h2><span aria-hidden="true">⚠</span> Seek medical advice</h2><ul id="urgent-list"></ul></div>
+          <div class="rc">
+            <h2 class="rc-lbl" id="res-h">Result</h2>
+            <svg class="gauge" viewBox="0 0 200 112" aria-hidden="true">
+              <path class="track" d="M 16 100 A 84 84 0 0 1 184 100" fill="none" stroke-width="12" stroke-linecap="round"/>
+              <path class="fill" id="g-fill" d="M 16 100 A 84 84 0 0 1 184 100" fill="none" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+            </svg>
+            <div class="big"><span id="g-num">0</span><small id="g-suf"></small></div>
+            <div class="big-lbl" id="g-lbl"></div>
+            <div class="chip" id="chip"><span aria-hidden="true" id="chip-ic"></span><span id="chip-tx"></span></div>
+            <p class="rc-sub" id="rc-sub"></p>
+            <div class="strip" id="strip"></div>
+            <hr>
+            <h3 id="drv-h">What drives this result</h3>
+            <div id="drivers"></div>
+          </div>
+
+          <div class="card sec">
+            <h2>What if…<span class="muted">one change at a time</span></h2>
+            <div id="whatif"></div>
+          </div>
+
+          <div class="card sec">
+            <h2>Criteria &amp; indicators</h2>
+            <div class="tiles" id="tiles"></div>
+          </div>
+
+          <div class="card sec">
+            <h2>Your action plan<span class="muted">rule-based</span></h2>
+            <div id="actions"></div>
+          </div>
+
+          <div class="card sec ai">
+            <h2>AI guidance</h2>
+            <button type="button" class="btn primary" disabled aria-describedby="ai-note">✦ Get AI guidance</button>
+            <p id="ai-note">Not active in this preview. In the full build this will call our own <code>/api/recommend</code> server, never Anthropic directly from the browser. It sends only anonymous numbers and your risk band, and streams the answer as it is written. It falls back to the plan above if the AI is unavailable.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="methods" id="methods" aria-labelledby="methods-h">
+    <div class="eyebrow">Methods &amp; limitations</div>
+    <h2 id="methods-h">What the numbers are, and aren't</h2>
+    <h3>Level 1: validated questionnaires</h3>
+    <p><b>FINDRISC</b> (Finnish Diabetes Risk Score) scores 8 items from 0 to 26. Each score band maps to the published estimate of 10-year type 2 diabetes risk from the original Finnish cohort: about 1 in 100, 1 in 25, 1 in 6, 1 in 3 or 1 in 2. It uses its own European BMI and waist cut-offs. <b>IDRS</b> (Indian Diabetes Risk Score) scores 4 items from 0 to 100 using Asian waist cut-offs. It was developed to screen for undiagnosed diabetes in India. Sleep and smoking are asked but are <i>not</i> part of either score. They only shape the guidance.</p>
+    <h3>Levels 2–3: criteria plus an illustrative index</h3>
+    <p>The glucose category uses ADA diagnostic thresholds: HbA1c 5.7–6.4% or fasting glucose 100–125 mg/dL is the prediabetes range; HbA1c ≥ 6.5% or fasting glucose ≥ 126 mg/dL is the diabetes range. A diagnosis always needs confirmation by a clinician, usually with repeat testing. The other indicators are:</p>
+    <ul>
+      <li>Metabolic-syndrome criteria: harmonised definition, any 3 of 5.</li>
+      <li>HOMA-IR: an insulin-resistance estimate from fasting glucose and insulin.</li>
+      <li>FIB-4: a liver-fibrosis index.</li>
+      <li>eGFR: kidney function, calculated with the race-free CKD-EPI 2021 equation and staged by KDIGO.</li>
+    </ul>
+    <p>The 0–100 <b>index</b> is a hand-weighted logistic formula. Its weights were chosen for illustration and were <b>not fitted to or validated on any data</b>, so it is not a probability. It exists to show how factors move together. Each bar shows <code>weight × (your value − reference value)</code>. The reference person is 40 years old with BMI 23, waist at the cut-off, no family history, regular activity, fasting glucose 90 mg/dL, HbA1c 5.3% and systolic BP 120 mmHg; Level 3 adds HOMA-IR 1.5, TG 100 mg/dL and HDL 50 mg/dL.</p>
+    <h3>Limitations</h3>
+    <ul>
+      <li>No result here is a diagnosis. The questionnaires were validated in Finnish (FINDRISC) and Indian (IDRS) populations and may be less accurate elsewhere.</li>
+      <li>HbA1c can be misleading with anaemia, haemoglobin variants, pregnancy or recent blood loss.</li>
+      <li>FIB-4 is less reliable under 35 and over 65. eGFR from creatinine is affected by muscle mass and diet.</li>
+      <li>Medications that change glucose, lipids or blood pressure are not modelled.</li>
+    </ul>
+    <h3>References</h3>
+    <ol>
+      <li>Lindström J, Tuomilehto J. The Diabetes Risk Score: a practical tool to predict type 2 diabetes risk. <i>Diabetes Care</i> 2003;26:725–731.</li>
+      <li>Mohan V, Deepa R, Deepa M, Somannavar S, Datta M. A simplified Indian Diabetes Risk Score for screening for undiagnosed diabetic subjects. <i>J Assoc Physicians India</i> 2005;53:759–763. <span class="todo">TODO review: activity item mapping</span></li>
+      <li>American Diabetes Association Professional Practice Committee. Diagnosis and Classification of Diabetes: Standards of Care in Diabetes. <i>Diabetes Care</i>, current Supplement 1. <span class="todo">TODO: pin edition &amp; pages</span></li>
+      <li>Alberti KGMM et al. Harmonizing the metabolic syndrome. <i>Circulation</i> 2009;120:1640–1645.</li>
+      <li>WHO Western Pacific Region / IASO / IOTF. The Asia-Pacific perspective: redefining obesity and its treatment. 2000.</li>
+      <li>Matthews DR et al. Homeostasis model assessment. <i>Diabetologia</i> 1985;28:412–419.</li>
+      <li>Sterling RK et al. Development of a simple noninvasive index to predict significant fibrosis (FIB-4). <i>Hepatology</i> 2006;43:1317–1325.</li>
+      <li>Inker LA et al. New creatinine- and cystatin C–based equations to estimate GFR without race. <i>N Engl J Med</i> 2021;385:1737–1749.</li>
+      <li>Diabetes Prevention Program Research Group. Reduction in the incidence of type 2 diabetes with lifestyle intervention or metformin. <i>N Engl J Med</i> 2002;346:393–403.</li>
+      <li>Whelton PK et al. 2017 ACC/AHA high blood pressure guideline. <i>Hypertension</i> 2018;71:e13–e115.</li>
+    </ol>
+  </section>
+</main>
+
+<footer><div class="wrap">Educational screening tool — not a diagnostic device. Your inputs are processed in your browser and saved only on this device (and in the link if you copy it). Preview build.</div></footer>
+
+<div class="mbar" id="mbar" aria-hidden="true"><span><b id="m-num">–</b> <span id="m-suf"></span> · <span class="mchip" id="m-chip"></span></span><a href="#results" tabindex="-1">View details ↓</a></div>
+<div class="sr-only" aria-live="polite" id="live"></div>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k === 'text') el.textContent = v;
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  for (const k of kids.flat()) if (k != null && k !== false) el.append(k instanceof Node ? k : String(k));
+  return el;
+}
+const round = (x, d) => { const m = 10 ** d; return Math.round(x * m) / m; };
+const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- units (canonical: mg/dL, %, kg, cm) ---------- */
+const DIMS = {
+  glucose: [{ u: 'mg/dL' }, { u: 'mmol/L', to: x => x / 18.016, from: x => x * 18.016, dec: 1, step: 0.1 }],
+  hba1c:   [{ u: '%' }, { u: 'mmol/mol', to: x => 10.929 * (x - 2.15), from: x => x / 10.929 + 2.15, dec: 0, step: 1 }],
+  weight:  [{ u: 'kg' }, { u: 'lb', to: x => x * 2.20462, from: x => x / 2.20462, dec: 0, step: 1 }],
+  height:  [{ u: 'cm' }, { u: 'in', btn: 'ft/in', to: x => x / 2.54, from: x => x * 2.54, dec: 0, step: 1 }],
+  length:  [{ u: 'cm' }, { u: 'in', to: x => x / 2.54, from: x => x * 2.54, dec: 1, step: 0.5 }],
+  chol:    [{ u: 'mg/dL' }, { u: 'mmol/L', to: x => x / 38.67, from: x => x * 38.67, dec: 2, step: 0.05 }],
+  tg:      [{ u: 'mg/dL' }, { u: 'mmol/L', to: x => x / 88.57, from: x => x * 88.57, dec: 2, step: 0.05 }],
+  creat:   [{ u: 'mg/dL' }, { u: 'µmol/L', to: x => x * 88.42, from: x => x / 88.42, dec: 0, step: 1 }],
+};
+const ID = x => x;
+
+/* ---------- fields (canonical ranges = plausible ranges) ---------- */
+const yesNo = [['no', 'No'], ['yes', 'Yes']];
+const F = {
+  sex: { type: 'select', label: 'Sex (for sex-specific cut-offs)', opts: [['female', 'Female'], ['male', 'Male']] },
+  age: { label: 'Age', unit: 'years', min: 18, max: 90, step: 1, dec: 0 },
+  height: { label: 'Height', dim: 'height', min: 130, max: 220, step: 1, dec: 0 },
+  weight: { label: 'Weight', dim: 'weight', min: 30, max: 250, step: 0.5, dec: 1 },
+  waist: { label: 'Waist circumference', dim: 'length', min: 50, max: 170, step: 1, dec: 0 },
+  family: { type: 'select', label: 'Family history of diabetes', opts: [['none', 'None known'], ['second', 'Grandparent, aunt, uncle or cousin'], ['one', 'One parent, sibling or child'], ['both', 'Both parents']] },
+  activity: { type: 'select', label: 'Physical activity', opts: [['vigorous', 'Regular exercise and physically demanding work'], ['regular', '≥ 30 min most days (exercise or active work)'], ['light', 'Some activity, under 30 min a day'], ['sedentary', 'Mostly sitting, no exercise']] },
+  vegFruit: { type: 'select', label: 'Vegetables, fruit or berries every day?', opts: [['yes', 'Yes'], ['no', 'No']] },
+  bpMeds: { type: 'select', label: 'Ever taken blood-pressure medication regularly?', opts: yesNo },
+  highGlucose: { type: 'select', label: 'Ever told your glucose was high (incl. pregnancy)?', opts: yesNo },
+  smoking: { type: 'select', label: 'Smoking', opts: [['never', 'Never'], ['former', 'Former'], ['current', 'Current']] },
+  sleep: { label: 'Sleep per night', unit: 'hours', min: 3, max: 12, step: 0.5, dec: 1 },
+  fpg: { label: 'Fasting glucose', dim: 'glucose', min: 40, max: 600, step: 1, dec: 0 },
+  hba1c: { label: 'HbA1c', dim: 'hba1c', min: 3, max: 15, step: 0.1, dec: 1 },
+  randomGlucose: { label: 'Random (non-fasting) glucose', dim: 'glucose', min: 40, max: 600, step: 1, dec: 0 },
+  symptoms: { type: 'select', label: 'Excess thirst, frequent urination or unexplained weight loss?', opts: yesNo },
+  sbp: { label: 'Systolic BP', unit: 'mmHg', min: 70, max: 250, step: 1, dec: 0 },
+  dbp: { label: 'Diastolic BP', unit: 'mmHg', min: 40, max: 150, step: 1, dec: 0 },
+  insulin: { label: 'Fasting insulin', unit: 'µU/mL', min: 1, max: 100, step: 0.5, dec: 1 },
+  tc: { label: 'Total cholesterol', dim: 'chol', min: 80, max: 450, step: 1, dec: 0 },
+  hdl: { label: 'HDL-C', dim: 'chol', min: 15, max: 120, step: 1, dec: 0 },
+  ldl: { label: 'LDL-C', dim: 'chol', min: 20, max: 400, step: 1, dec: 0 },
+  tg: { label: 'Triglycerides', dim: 'tg', min: 30, max: 1000, step: 5, dec: 0 },
+  ast: { label: 'AST', unit: 'U/L', min: 5, max: 500, step: 1, dec: 0 },
+  alt: { label: 'ALT', unit: 'U/L', min: 5, max: 500, step: 1, dec: 0 },
+  platelets: { label: 'Platelets', unit: '×10⁹/L', min: 20, max: 800, step: 5, dec: 0 },
+  creat: { label: 'Creatinine', dim: 'creat', min: 0.2, max: 15, step: 0.01, dec: 2 },
+};
+const DEF = { sex: 'male', age: 45, height: 170, weight: 75, waist: 90, family: 'none', activity: 'light', vegFruit: 'yes', bpMeds: 'no', highGlucose: 'no', smoking: 'never', sleep: 7, fpg: 95, hba1c: 5.6, randomGlucose: 120, symptoms: 'no', sbp: 122, dbp: 80, insulin: 10, tc: 195, hdl: 48, ldl: 120, tg: 140, ast: 26, alt: 28, platelets: 250, creat: 0.9 };
+const ABOUT = ['sex', 'age', 'height', 'weight', 'waist'];
+const LEVELS = {
+  1: [['About you', ABOUT], ['Risk-score questions', ['family', 'activity', 'vegFruit', 'bpMeds', 'highGlucose']], ['Other factors', ['smoking', 'sleep'], 'not part of the scores']],
+  2: [['About you', [...ABOUT, 'family', 'activity']], ['Glucose', ['fpg', 'hba1c', 'randomGlucose', 'symptoms']], ['Blood pressure', ['sbp', 'dbp', 'bpMeds']]],
+  3: [['About you', [...ABOUT, 'family', 'activity']], ['Glucose & insulin', ['fpg', 'hba1c', 'insulin', 'symptoms']], ['Blood pressure', ['sbp', 'dbp', 'bpMeds']], ['Lipids', ['tc', 'hdl', 'ldl', 'tg']], ['Liver', ['ast', 'alt', 'platelets']], ['Kidney', ['creat']]],
+};
+const levelFields = L => LEVELS[L].flatMap(g => g[1]);
+
+/* ---------- state ---------- */
+const KEY = 'dr-preview-v1';
+const state = { level: 1, v: { ...DEF }, units: {}, cut: 'asian', theme: 'system' };
+
+function sanitize(id, val) {
+  const f = F[id]; if (!f) return undefined;
+  if (f.type === 'select') return f.opts.some(o => o[0] === val) ? val : undefined;
+  const n = Number(val);
+  return Number.isFinite(n) && n >= f.min && n <= f.max ? n : undefined;
+}
+function loadState() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { saved = null; }
+  if (saved && typeof saved === 'object') {
+    if (saved.units && typeof saved.units === 'object') for (const d in DIMS) if (saved.units[d] === 0 || saved.units[d] === 1) state.units[d] = saved.units[d];
+    if (['system', 'light', 'dark'].includes(saved.theme)) state.theme = saved.theme;
+    applyShared(saved);
+  }
+  const m = location.hash.match(/^#s=([A-Za-z0-9_-]+)$/);
+  if (m) {
+    try { applyShared(JSON.parse(atob(m[1].replace(/-/g, '+').replace(/_/g, '/')))); } catch (e) { /* ignore bad link */ }
+  }
+}
+function applyShared(o) {
+  if ([1, 2, 3].includes(o.level)) state.level = o.level;
+  if (o.cut === 'asian' || o.cut === 'general') state.cut = o.cut;
+  if (o.v && typeof o.v === 'object') for (const k in F) { const s = sanitize(k, o.v[k]); if (s !== undefined) state.v[k] = s; }
+}
+function shareHash() {
+  const v = {};
+  for (const k in F) if (state.v[k] !== DEF[k]) v[k] = typeof state.v[k] === 'number' ? round(state.v[k], 3) : state.v[k];
+  const json = JSON.stringify({ level: state.level, cut: state.cut, v });
+  return '#s=' + btoa(json).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+let saveT = 0;
+function persist() {
+  clearTimeout(saveT);
+  saveT = setTimeout(() => {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable */ }
+    try { history.replaceState(null, '', shareHash()); } catch (e) { /* sandboxed */ }
+  }, 250);
+}
+
+/* ---------- unit helpers ---------- */
+function unitOf(id) {
+  const f = F[id];
+  if (!f.dim) return { u: f.unit || '', to: ID, from: ID, dec: f.dec, step: f.step };
+  const i = state.units[f.dim] || 0;
+  return i === 0 ? { ...DIMS[f.dim][0], to: ID, from: ID, dec: f.dec, step: f.step } : DIMS[f.dim][i];
+}
+function dimUnit(dim) {
+  const i = state.units[dim] || 0;
+  return i === 0 ? { u: DIMS[dim][0].u, to: ID, dec: dim === 'hba1c' ? 1 : dim === 'creat' ? 2 : 0 } : DIMS[dim][i];
+}
+function ftIn(cm) { const t = Math.round(cm / 2.54); return `${Math.floor(t / 12)}′ ${t % 12}″`; }
+function fmtDim(dim, canon) {
+  const u = dimUnit(dim);
+  if (dim === 'height' && u.u === 'in') return ftIn(canon);
+  const d = u.dec;
+  return round(u.to(canon), d).toFixed(d) + ' ' + u.u;
+}
+const fmtNum = (x, d) => round(x, d).toFixed(d);
+
+/* ---------- model (pure) ---------- */
+const bmiOf = v => v.weight / ((v.height / 100) ** 2);
+const waistCut = (sex, cut) => cut === 'asian' ? (sex === 'female' ? 80 : 90) : (sex === 'female' ? 88 : 102);
+function bmiCat(b, cut) {
+  const [ow, ob] = cut === 'asian' ? [23, 25] : [25, 30];
+  if (b < 18.5) return { label: 'Underweight', s: 'warn' };
+  if (b < ow) return { label: 'Healthy range', s: 'ok' };
+  if (b < ob) return { label: 'Overweight', s: 'warn' };
+  return { label: 'Obesity range', s: 'bad' };
+}
+const FBANDS = [
+  { max: 6, label: 'Low', risk: '≈ 1 in 100', tone: 'good', icon: '✓' },
+  { max: 11, label: 'Slightly elevated', risk: '≈ 1 in 25', tone: 'neutral', icon: '●' },
+  { max: 14, label: 'Moderate', risk: '≈ 1 in 6', tone: 'warn', icon: '▲' },
+  { max: 20, label: 'High', risk: '≈ 1 in 3', tone: 'bad', icon: '‼' },
+  { max: 26, label: 'Very high', risk: '≈ 1 in 2', tone: 'bad', icon: '‼' },
+];
+function findrisc(v) {
+  const b = bmiOf(v), male = v.sex === 'male', w = v.waist;
+  const items = [
+    { label: 'Age', pts: v.age < 45 ? 0 : v.age < 55 ? 2 : v.age < 65 ? 3 : 4, max: 4, mod: false },
+    { label: 'BMI', pts: b < 25 ? 0 : b <= 30 ? 1 : 3, max: 3, mod: true },
+    { label: 'Waist', pts: male ? (w < 94 ? 0 : w <= 102 ? 3 : 4) : (w < 80 ? 0 : w <= 88 ? 3 : 4), max: 4, mod: true },
+    { label: 'Daily activity', pts: v.activity === 'vigorous' || v.activity === 'regular' ? 0 : 2, max: 2, mod: true },
+    { label: 'Daily vegetables / fruit', pts: v.vegFruit === 'yes' ? 0 : 1, max: 1, mod: true },
+    { label: 'BP medication', pts: v.bpMeds === 'yes' ? 2 : 0, max: 2, mod: false },
+    { label: 'History of high glucose', pts: v.highGlucose === 'yes' ? 5 : 0, max: 5, mod: false },
+    { label: 'Family history', pts: v.family === 'second' ? 3 : v.family === 'one' || v.family === 'both' ? 5 : 0, max: 5, mod: false },
+  ];
+  const total = items.reduce((s, i) => s + i.pts, 0);
+  return { items, total, band: FBANDS.find(b2 => total <= b2.max) };
+}
+function idrs(v) {
+  const male = v.sex === 'male', w = v.waist;
+  const age = v.age < 35 ? 0 : v.age < 50 ? 20 : 30;
+  const waist = male ? (w < 90 ? 0 : w < 100 ? 10 : 20) : (w < 80 ? 0 : w < 90 ? 10 : 20);
+  const act = { vigorous: 0, regular: 20, light: 30, sedentary: 30 }[v.activity];
+  const fam = { none: 0, second: 0, one: 10, both: 20 }[v.family];
+  const total = age + waist + act + fam;
+  return { total, band: total < 30 ? { label: 'Low', s: 'ok' } : total < 60 ? { label: 'Moderate', s: 'warn' } : { label: 'High', s: 'bad' } };
+}
+const homaIR = v => v.fpg * v.insulin / 405;
+const LOGIT0 = Math.log(0.05 / 0.95);
+const IDX = [
+  { label: 'Age', x: v => v.age, base: 40, coef: 0.035, mod: false },
+  { label: 'BMI', x: v => bmiOf(v), base: 23, coef: 0.07, mod: true },
+  { label: 'Waist above cut-off', x: (v, c) => Math.max(0, v.waist - waistCut(v.sex, c)), base: 0, coef: 0.03, mod: true },
+  { label: 'Family history', x: v => ({ none: 0, second: 0.4, one: 0.8, both: 1.3 })[v.family], base: 0, coef: 1, mod: false },
+  { label: 'Physical activity', x: v => ({ vigorous: -0.15, regular: 0, light: 0.25, sedentary: 0.45 })[v.activity], base: 0, coef: 1, mod: true },
+  { label: 'Fasting glucose', x: v => v.fpg, base: 90, coef: 0.045, mod: true },
+  { label: 'HbA1c', x: v => v.hba1c, base: 5.3, coef: 1.1, mod: true },
+  { label: 'Systolic BP', x: v => v.sbp, base: 120, coef: 0.012, mod: true },
+  { label: 'Insulin resistance (HOMA-IR)', x: v => Math.log(homaIR(v)), base: Math.log(1.5), coef: 0.45, mod: true, l3: true },
+  { label: 'Triglycerides', x: v => Math.log(v.tg / 100), base: 0, coef: 0.45, mod: true, l3: true },
+  { label: 'HDL-C', x: v => v.hdl, base: 50, coef: -0.02, mod: true, l3: true },
+];
+function indexModel(v, L, cut) {
+  let z = LOGIT0;
+  const contribs = IDX.filter(f => !f.l3 || L === 3).map(f => {
+    const c = f.coef * (f.x(v, cut) - f.base); z += c;
+    return { label: f.label, c, mod: f.mod };
+  });
+  const p = 1 / (1 + Math.exp(-z));
+  return { index: Math.min(99, Math.max(1, Math.round(p * 100))), contribs };
+}
+function ada(v, L) {
+  const hits = [];
+  if (v.hba1c >= 6.5) hits.push(['dm', 'HbA1c']); else if (v.hba1c >= 5.7) hits.push(['pre', 'HbA1c']);
+  if (v.fpg >= 126) hits.push(['dm', 'fasting glucose']); else if (v.fpg >= 100) hits.push(['pre', 'fasting glucose']);
+  if (L === 2 && v.randomGlucose >= 200 && v.symptoms === 'yes') hits.push(['dm', 'random glucose with symptoms']);
+  const cat = hits.some(x => x[0] === 'dm') ? 'dm' : hits.length ? 'pre' : 'normal';
+  const by = hits.filter(x => x[0] === cat).map(x => x[1]);
+  return { cat, by };
+}
+const ADA_BAND = {
+  normal: { label: 'Glucose below prediabetes range', tone: 'good', icon: '✓' },
+  pre: { label: 'Prediabetes range (ADA)', tone: 'warn', icon: '▲' },
+  dm: { label: 'Diabetes range — confirm with a clinician', tone: 'bad', icon: '‼' },
+};
+function egfr(v) {
+  const f = v.sex === 'female', k = f ? 0.7 : 0.9, a = f ? -0.241 : -0.302, r = v.creat / k;
+  return 142 * Math.min(r, 1) ** a * Math.max(r, 1) ** -1.2 * 0.9938 ** v.age * (f ? 1.012 : 1);
+}
+function kdigo(e) { return e >= 90 ? 'G1' : e >= 60 ? 'G2' : e >= 45 ? 'G3a' : e >= 30 ? 'G3b' : e >= 15 ? 'G4' : 'G5'; }
+const fib4 = v => v.age * v.ast / (v.platelets * Math.sqrt(v.alt));
+function mets(v, cut) {
+  const male = v.sex === 'male';
+  const crit = [
+    ['waist', v.waist >= waistCut(v.sex, cut)],
+    ['triglycerides', v.tg >= 150],
+    ['HDL', v.hdl < (male ? 40 : 50)],
+    ['blood pressure', v.sbp >= 130 || v.dbp >= 85 || v.bpMeds === 'yes'],
+    ['fasting glucose', v.fpg >= 100],
+  ];
+  return { n: crit.filter(c => c[1]).length, met: crit.filter(c => c[1]).map(c => c[0]) };
+}
+function bpCat(v) {
+  if (v.sbp >= 140 || v.dbp >= 90) return { label: 'Stage 2 range', s: 'bad' };
+  if (v.sbp >= 130 || v.dbp >= 80) return { label: 'Stage 1 range', s: 'warn' };
+  if (v.sbp >= 120) return { label: 'Elevated', s: 'warn' };
+  return { label: 'Normal', s: 'ok' };
+}
+function urgentList(L, v) {
+  const u = [];
+  if (L >= 2) {
+    const g = Math.max(v.fpg, L === 2 ? v.randomGlucose : 0);
+    if (g > 250) u.push(`Glucose of ${fmtDim('glucose', g)} is very high. If you feel unwell, are vomiting, very thirsty or drowsy, seek urgent care now. Otherwise contact a clinician today.`);
+    else if (L === 2 && v.randomGlucose >= 200 && v.symptoms === 'yes') u.push('Symptoms together with a random glucose ≥ 200 mg/dL need prompt medical review. Contact a clinician soon.');
+    if (v.sbp >= 180 || v.dbp >= 120) u.push(`Blood pressure ${v.sbp}/${v.dbp} mmHg is very high. Re-measure after 5 minutes' rest. If it stays this high, or you have chest pain, breathlessness, severe headache, weakness or vision change, seek urgent care.`);
+  }
+  if (L === 3) {
+    const e = egfr(v);
+    if (e < 30) u.push(`Estimated kidney function (eGFR ≈ ${Math.round(e)}) is in KDIGO stage ${kdigo(e)}. If you are not already under kidney care, arrange prompt medical follow-up.`);
+  }
+  return u;
+}
+function crossChecks(L, v) {
+  const w = [], b = bmiOf(v);
+  if (b < 14 || b > 70) w.push(`Height and weight give a BMI of ${fmtNum(b, 1)}, which is unusual. Please check both.`);
+  if (L >= 2 && v.dbp >= v.sbp) w.push('Diastolic BP should be lower than systolic. Check the reading.');
+  if (L >= 2) {
+    const eag = 28.7 * v.hba1c - 46.7;
+    if (Math.abs(v.fpg - eag) > 70) w.push(`HbA1c (${fmtDim('hba1c', v.hba1c)}) and fasting glucose (${fmtDim('glucose', v.fpg)}) disagree a lot. HbA1c can be affected by anaemia or haemoglobin variants, so ask a clinician.`);
+  }
+  if (L === 3 && v.tg < 400) {
+    const est = v.tc - v.hdl - v.tg / 5;
+    if (Math.abs(v.ldl - est) > 30) w.push(`LDL + HDL + TG/5 (≈ ${fmtDim('chol', v.ldl + v.hdl + v.tg / 5)}) doesn't match total cholesterol (${fmtDim('chol', v.tc)}). Check the lipid values; a directly measured LDL can differ a little.`);
+  }
+  return w;
+}
+function whatIfs(L, v, cut, score) {
+  const S = [
+    { label: `Lose ${fmtDim('weight', 5)}`, ap: x => ({ ...x, weight: Math.max(30, x.weight - 5) }), ok: bmiOf(v) > 20 },
+    { label: `Waist −${fmtDim('length', 5)}`, ap: x => ({ ...x, waist: Math.max(50, x.waist - 5) }), ok: v.waist > 70 },
+    { label: 'Reach 30 min of activity a day', ap: x => ({ ...x, activity: 'regular' }), ok: v.activity === 'light' || v.activity === 'sedentary' },
+    { label: 'Eat vegetables or fruit daily', ap: x => ({ ...x, vegFruit: 'yes' }), ok: L === 1 && v.vegFruit === 'no' },
+    { label: `HbA1c −${dimUnit('hba1c').u === '%' ? '0.5%' : '5.5 mmol/mol'}`, ap: x => ({ ...x, hba1c: x.hba1c - 0.5 }), ok: L >= 2 && v.hba1c > 5.3 },
+    { label: `Fasting glucose −${fmtDim('glucose', 10)}`, ap: x => ({ ...x, fpg: x.fpg - 10 }), ok: L >= 2 && v.fpg > 90 },
+    { label: 'Systolic BP −10 mmHg', ap: x => ({ ...x, sbp: x.sbp - 10 }), ok: L >= 2 && v.sbp > 120 },
+    { label: `Triglycerides −${fmtDim('tg', 30)}`, ap: x => ({ ...x, tg: Math.max(30, x.tg - 30) }), ok: L === 3 && v.tg > 100 },
+  ];
+  return S.filter(s => s.ok).map(s => {
+    const after = score(s.ap(v));
+    return { label: s.label, before: score(v), after };
+  });
+}
+const PRI = { high: 0, medium: 1, low: 2 };
+function actionPlan(L, v, cut, R) {
+  const A = [], b = bmiOf(v), wc = waistCut(v.sex, cut), bmiTop = cut === 'asian' ? 23 : 25;
+  if (L >= 2 && R.ada.cat === 'dm') A.push(['high', 'Confirm with a clinician soon', `Your ${R.ada.by.join(' and ')} ${R.ada.by.length > 1 ? 'are' : 'is'} in the ADA diabetes range. Only a clinician can confirm a diagnosis, usually with repeat testing, so book an appointment rather than waiting for a routine check.`]);
+  else if (L >= 2 && R.ada.cat === 'pre') A.push(['high', 'Talk to a clinician about prevention', `Your ${R.ada.by.join(' and ')} ${R.ada.by.length > 1 ? 'are' : 'is'} in the prediabetes range. Ask about a structured lifestyle programme and when to retest (often within a year).`]);
+  if (L === 1 && (R.f.total >= 12 || R.i.total >= 60)) A.push(['high', 'Ask for a blood test', 'Your questionnaire score is in a range where an HbA1c or fasting glucose test is commonly recommended.']);
+  if (b >= bmiTop) A.push([b >= bmiTop + 2 ? 'high' : 'medium', 'Aim for 5–7% weight loss', `For you that is about ${fmtDim('weight', v.weight * 0.05)} to ${fmtDim('weight', v.weight * 0.07)}. In the Diabetes Prevention Program, about 7% weight loss plus 150 min/week of activity cut progression to diabetes by 58%.`]);
+  if (v.waist >= wc) A.push(['medium', `Bring your waist under ${fmtDim('length', wc)}`, `Your waist is ${fmtDim('length', v.waist)}. The ${cut === 'asian' ? 'Asian' : 'general-population'} cut-off for ${v.sex === 'male' ? 'men' : 'women'} is ${fmtDim('length', wc)}.`]);
+  if (v.activity === 'light' || v.activity === 'sedentary') A.push(['medium', 'Build up to 150 min a week', 'Brisk walking or similar, spread over at least 3 days, plus muscle-strengthening twice a week. Break up long periods of sitting.']);
+  if (L >= 2 && (v.sbp >= 130 || v.dbp >= 80)) A.push([v.sbp >= 140 || v.dbp >= 90 ? 'high' : 'medium', 'Check your blood pressure', `${v.sbp}/${v.dbp} mmHg. Re-measure at rest on several days, and discuss it with a clinician if it stays at or above 130/80.`]);
+  if (L === 3) {
+    if (R.mets.n >= 3) A.push(['high', 'Review cardiometabolic risk', `You meet ${R.mets.n} of 5 metabolic-syndrome criteria (${R.mets.met.join(', ')}). Ask a clinician about your overall heart and metabolic risk.`]);
+    if (v.tg >= 150) A.push(['medium', `Triglycerides below ${fmtDim('tg', 150)}`, `Currently ${fmtDim('tg', v.tg)}. Cutting sugary drinks, refined carbohydrates and alcohol usually helps most.`]);
+    const f4 = fib4(v), lo = v.age > 65 ? 2.0 : 1.3;
+    if (f4 >= lo) A.push([f4 > 2.67 ? 'high' : 'medium', 'Discuss a liver check', `FIB-4 is ${fmtNum(f4, 2)}. A clinician may suggest further tests, such as elastography, to rule out liver fibrosis.`]);
+    if (R.egfr < 60) A.push(['high', 'Kidney follow-up', `eGFR is about ${Math.round(R.egfr)} (KDIGO ${kdigo(R.egfr)}). Ask about a urine albumin-to-creatinine test and medication review.`]);
+  }
+  if (L === 1 && v.vegFruit === 'no') A.push(['low', 'Vegetables or fruit every day', 'Daily vegetables, fruit or berries is one of the FINDRISC items. Aim for half your plate as vegetables.']);
+  if (L === 1 && v.smoking === 'current') A.push(['medium', 'Get stop-smoking support', 'Smoking is linked to higher type 2 diabetes risk. Stop-smoking services and nicotine replacement roughly double quit rates.']);
+  if (L === 1 && (v.sleep < 6 || v.sleep > 9)) A.push(['low', 'Aim for 7–9 hours of sleep', `You reported ${v.sleep} h. Both short and long sleep are associated with poorer glucose control.`]);
+  A.push(['low', 'Re-check regularly', L === 1 ? 'Repeat this check every 1–3 years, or sooner after big changes in weight or health.' : 'Follow the retest interval your clinician recommends; update your values here when you have new results.']);
+  return A.sort((a, b2) => PRI[a[0]] - PRI[b2[0]]);
+}
+function compute() {
+  const L = state.level, v = state.v, cut = state.cut, R = { L };
+  R.bmi = bmiOf(v);
+  R.urgent = urgentList(L, v);
+  R.warnings = crossChecks(L, v);
+  if (L === 1) {
+    R.f = findrisc(v); R.i = idrs(v);
+    R.gauge = { value: R.f.total, max: 26, suf: '/ 26', lbl: 'FINDRISC points' };
+    R.band = R.f.band;
+    R.sub = `Published FINDRISC estimate: ${R.f.band.risk} people in this score band develop type 2 diabetes within 10 years (Finnish cohort).`;
+    R.what = whatIfs(L, v, cut, x => findrisc(x).total);
+  } else {
+    R.ada = ada(v, L); R.m = indexModel(v, L, cut);
+    R.gauge = { value: R.m.index, max: 100, suf: '/ 100', lbl: 'Illustrative index' };
+    R.band = ADA_BAND[R.ada.cat];
+    R.sub = 'The index is illustrative and uncalibrated: it is not a probability. The coloured category comes from ADA glucose criteria.';
+    R.what = whatIfs(L, v, cut, x => indexModel(x, L, cut).index);
+    if (L === 3) { R.mets = mets(v, cut); R.egfr = egfr(v); }
+  }
+  R.actions = actionPlan(L, v, cut, R);
+  return R;
+}
+
+/* ---------- inputs UI ---------- */
+const form = $('#inputs');
+form.addEventListener('submit', e => e.preventDefault());
+function buildInputs() {
+  const groups = LEVELS[state.level].map(([title, ids, note]) => h('section', { class: 'card group', 'aria-label': title },
+    h('h2', null, title, note ? h('span', { class: 'muted' }, ` · ${note}`) : null),
+    h('div', { class: 'fields' }, ids.map(buildField))));
+  form.replaceChildren(...groups);
+}
+function buildField(id) {
+  const f = F[id], inId = 'in-' + id, wrap = h('div', { class: 'field', 'data-field': id });
+  if (f.type === 'select') {
+    const sel = h('select', { id: inId, 'data-id': id }, f.opts.map(([val, lab]) => h('option', { value: val }, lab)));
+    sel.value = state.v[id];
+    wrap.append(h('label', { class: 'flabel', for: inId }, f.label), sel);
+    return wrap;
+  }
+  const u = unitOf(id);
+  const head = h('div', { class: 'fhead' }, h('label', { class: 'flabel', for: inId }, f.label));
+  if (f.dim) {
+    const seg = h('span', { class: 'seg', role: 'group', 'aria-label': `${f.label} units` },
+      DIMS[f.dim].map((d, i) => h('button', { type: 'button', 'data-dim': f.dim, 'data-ui': i, 'aria-pressed': String((state.units[f.dim] || 0) === i) }, d.btn || d.u)));
+    head.append(seg);
+  }
+  const lo = Math.ceil(u.to(f.min) * 10 ** u.dec) / 10 ** u.dec, hi = Math.floor(u.to(f.max) * 10 ** u.dec) / 10 ** u.dec;
+  const disp = fmtNum(u.to(state.v[id]), u.dec);
+  const num = h('input', { type: 'number', id: inId, 'data-id': id, 'data-role': 'num', inputmode: 'decimal', min: lo, max: hi, step: u.step, value: disp, 'aria-describedby': 'msg-' + id });
+  const range = h('input', { type: 'range', 'data-id': id, 'data-role': 'range', min: lo, max: hi, step: u.step, value: disp, 'aria-label': `${f.label} slider`, 'aria-valuetext': `${disp} ${u.u}` });
+  const row = h('div', { class: 'frow' }, num, h('span', { class: 'unit' }, u.u === 'in' && f.dim === 'height' ? 'in' : u.u));
+  if (f.dim === 'height' && u.u === 'in') row.append(h('span', { class: 'readout', id: 'ro-height' }, '= ' + ftIn(state.v.height)));
+  if (id === 'weight' || id === 'height') row.append(h('span', { class: 'readout', 'data-bmi': '1' }, ''));
+  wrap.append(head, row, range, h('p', { class: 'fmsg', id: 'msg-' + id }));
+  return wrap;
+}
+function rangeMsg(id) {
+  const f = F[id], u = unitOf(id);
+  return `Enter ${f.label.toLowerCase()} between ${fmtNum(u.to(f.min), u.dec)} and ${fmtNum(u.to(f.max), u.dec)} ${u.u}.`;
+}
+form.addEventListener('input', e => {
+  const t = e.target, id = t.dataset.id;
+  if (!id) return;
+  const f = F[id];
+  if (f.type === 'select') { state.v[id] = t.value; return changed(); }
+  const u = unitOf(id), wrap = t.closest('.field'), msg = $('#msg-' + id), num = wrap.querySelector('[data-role=num]'), range = wrap.querySelector('[data-role=range]');
+  const d = parseFloat(t.value), canon = Number.isFinite(d) ? u.from(d) : NaN;
+  const bad = !(canon >= f.min - 1e-6 && canon <= f.max + 1e-6);
+  if (t.dataset.role === 'num') {
+    num.setAttribute('aria-invalid', String(bad)); wrap.classList.toggle('invalid', bad);
+    msg.textContent = bad ? (t.value.trim() === '' ? `Enter a value for ${f.label.toLowerCase()}.` : rangeMsg(id)) : '';
+    if (bad) return;
+    range.value = t.value;
+  } else {
+    num.value = fmtNum(d, u.dec); num.setAttribute('aria-invalid', 'false'); wrap.classList.remove('invalid'); msg.textContent = '';
+  }
+  range.setAttribute('aria-valuetext', `${fmtNum(d, u.dec)} ${u.u}`);
+  state.v[id] = Math.min(f.max, Math.max(f.min, canon));
+  const ro = $('#ro-height'); if (id === 'height' && ro) ro.textContent = '= ' + ftIn(state.v.height);
+  changed();
+});
+form.addEventListener('click', e => {
+  const b = e.target.closest('button[data-dim]'); if (!b) return;
+  state.units[b.dataset.dim] = Number(b.dataset.ui);
+  const focusId = b.closest('.field').dataset.field;
+  buildInputs(); changed();
+  const again = form.querySelector(`.field[data-field="${focusId}"] button[data-ui="${b.dataset.ui}"]`); if (again) again.focus();
+});
+
+/* ---------- render ---------- */
+let pending = 0;
+function changed() { persist(); clearTimeout(pending); pending = setTimeout(() => requestAnimationFrame(render), 80); }
+
+const TONE = { good: 'var(--g-good)', neutral: 'var(--g-neutral)', warn: 'var(--g-warn)', bad: 'var(--g-bad)' };
+let gCur = 0, gMax = 26, gAnim = 0, gKind = 0;
+function paintGauge(val) {
+  $('#g-fill').setAttribute('stroke-dashoffset', String(100 - (val / gMax) * 100));
+  $('#g-num').textContent = String(Math.round(val));
+}
+function tweenGauge(target) {
+  cancelAnimationFrame(gAnim);
+  const start = gCur, t0 = performance.now(), dur = reduceMotion() ? 0 : 480;
+  const step = now => {
+    const k = dur ? Math.min(1, (now - t0) / dur) : 1, e = 1 - (1 - k) ** 3;
+    gCur = start + (target - start) * e; paintGauge(gCur);
+    if (k < 1) gAnim = requestAnimationFrame(step);
+  };
+  gAnim = requestAnimationFrame(step);
+}
+function tile(lbl, val, st, stTxt, note) {
+  const icon = { ok: '✓', warn: '▲', bad: '‼', info: 'i' }[st];
+  return h('div', { class: 'tile' }, h('div', { class: 't-lbl' }, lbl), h('div', { class: 't-val' }, val),
+    h('div', { class: 't-st', 'data-s': st }, h('span', { 'aria-hidden': 'true' }, icon), stTxt), note ? h('div', { class: 't-note' }, note) : null);
+}
+function driverRow(label, valText, cls, bar) {
+  return h('div', { class: 'drv' }, h('div', { class: 'drv-row' }, h('span', null, label), h('span', { class: 'drv-val ' + cls }, valText)), bar);
+}
+function render() {
+  const R = compute(), L = R.L;
+  // gauge
+  if (gKind !== L) { gKind = L; gCur = 0; }
+  gMax = R.gauge.max;
+  $('#g-fill').style.stroke = TONE[R.band.tone];
+  tweenGauge(R.gauge.value);
+  $('#g-suf').textContent = R.gauge.suf; $('#g-lbl').textContent = R.gauge.lbl;
+  const chip = $('#chip'); chip.dataset.tone = R.band.tone; $('#chip-ic').textContent = R.band.icon;
+  $('#chip-tx').textContent = L === 1 ? `${R.band.label} · ${R.band.risk} over 10 yrs` : R.band.label;
+  $('#rc-sub').textContent = R.sub;
+  // strip
+  const strip = $('#strip');
+  const segs = L === 1 ? FBANDS.map((b, i) => ({ lbl: b.label, on: b === R.band, tone: b.tone, range: `${i ? FBANDS[i - 1].max + 1 : 0}–${b.max}` }))
+    : ['normal', 'pre', 'dm'].map(k => ({ lbl: { normal: 'Below prediabetes', pre: 'Prediabetes range', dm: 'Diabetes range' }[k], on: R.ada.cat === k, tone: ADA_BAND[k].tone }));
+  strip.replaceChildren(
+    h('div', { class: 'strip-bar', 'aria-hidden': 'true' }, segs.map(s => h('span', { class: 'strip-seg' + (s.on ? ' on' : ''), style: `color:${TONE[s.tone]}` }))),
+    h('div', { class: 'strip-lbls' }, segs.map(s => h('span', { class: s.on ? 'on' : '' }, s.lbl, s.range ? h('br') : null, s.range || null, s.on ? h('span', { class: 'sr-only' }, ' (your band)') : null))),
+    h('div', { class: 'strip-cap' }, L === 1 ? 'FINDRISC score bands (points)' : 'ADA glucose categories'));
+  // drivers
+  const dv = $('#drivers');
+  if (L === 1) {
+    $('#drv-h').textContent = 'What drives your FINDRISC score';
+    const grp = mod => R.f.items.filter(i => i.mod === mod).sort((a, b) => b.pts - a.pts || b.max - a.max).map(i =>
+      driverRow(i.label, i.pts ? `+${i.pts} pts` : '0 pts', i.pts ? 'up' : 'zero',
+        h('div', { class: 'bar' }, h('i', { style: `width:${(i.pts / 5) * 100}%` }))));
+    dv.replaceChildren(h('h4', null, 'Things you can change'), ...grp(true), h('h4', null, "Things you can't change"), ...grp(false),
+      h('p', { class: 'drv-note' }, `IDRS (Indian score): ${R.i.total} / 100 · ${R.i.band.label}. Bar length = points out of 5.`));
+  } else {
+    $('#drv-h').textContent = 'What drives the index';
+    const grp = mod => R.m.contribs.filter(c => c.mod === mod).sort((a, b) => Math.abs(b.c) - Math.abs(a.c)).map(c => {
+      const z = Math.abs(c.c) < 0.02, up = c.c > 0, w = Math.min(50, Math.abs(c.c) / 2 * 50);
+      return driverRow(c.label, z ? '≈ 0' : `${up ? '▲ +' : '▼ −'}${fmtNum(Math.abs(c.c), 2)}`, z ? 'zero' : up ? 'up' : 'dn',
+        h('div', { class: 'bar div' }, h('i', { class: up ? 'up' : 'dn', style: `left:${up ? 50 : 50 - w}%;width:${z ? 0 : w}%` })));
+    });
+    dv.replaceChildren(h('h4', null, 'Things you can change'), ...grp(true), h('h4', null, "Things you can't change"), ...grp(false),
+      h('p', { class: 'drv-note' }, '▲ raises / ▼ lowers the index compared with the reference person (log-odds, illustrative). See Methods.'));
+  }
+  // what-if
+  const unit = L === 1 ? ' pts' : '';
+  const wi = R.what.map(w => {
+    const better = w.after < w.before;
+    const det = L === 1 ? (better ? `${findBand(w.before).risk} → ${findBand(w.after).risk} over 10 years` : 'Not enough to cross the next scoring threshold') : (better ? '' : w.before >= 99 ? 'The index is at its 99 ceiling, so single changes don\'t show. Your glucose category matters more here.' : 'No change at this step');
+    return h('div', { class: 'wi' }, h('b', null, w.label), h('span', { class: 'res ' + (better ? 'better' : 'same') }, better ? `${w.before} → ${w.after}${unit}` : 'no change'), det ? h('span', { class: 'det' }, det) : null);
+  });
+  $('#whatif').replaceChildren(...(wi.length ? wi : [h('p', { class: 'wi' }, 'Your modifiable factors are already at or near the reference values.')]));
+  // tiles
+  const T = [];
+  const bc = bmiCat(R.bmi, state.cut);
+  T.push(tile('BMI', fmtNum(R.bmi, 1), bc.s, bc.label, `${state.cut === 'asian' ? 'Asian' : 'General'} cut-offs`));
+  const wc = waistCut(state.v.sex, state.cut);
+  if (L === 1) {
+    T.push(tile('Waist', fmtDim('length', state.v.waist), state.v.waist >= wc ? 'warn' : 'ok', state.v.waist >= wc ? 'Above cut-off' : 'Below cut-off', `Cut-off ${fmtDim('length', wc)}`));
+    T.push(tile('IDRS', `${R.i.total} / 100`, R.i.band.s, R.i.band.label, '< 30 low · 30–50 moderate · ≥ 60 high'));
+  } else {
+    T.push(tile('Glucose category', R.ada.cat === 'normal' ? 'Normal' : R.ada.cat === 'pre' ? 'Prediabetes range' : 'Diabetes range', R.ada.cat === 'normal' ? 'ok' : R.ada.cat === 'pre' ? 'warn' : 'bad', R.ada.by.length ? 'by ' + R.ada.by.join(' & ') : 'ADA criteria', `HbA1c ${fmtDim('hba1c', state.v.hba1c)} · FPG ${fmtDim('glucose', state.v.fpg)}`));
+    const bp = bpCat(state.v);
+    T.push(tile('Blood pressure', `${state.v.sbp}/${state.v.dbp}`, bp.s, bp.label, 'ACC/AHA 2017 categories'));
+  }
+  if (L === 3) {
+    T.push(tile('Metabolic syndrome', `${R.mets.n} / 5 criteria`, R.mets.n >= 3 ? 'bad' : R.mets.n ? 'warn' : 'ok', R.mets.n >= 3 ? 'Criteria met (≥ 3)' : 'Criteria not met', R.mets.met.length ? 'Met: ' + R.mets.met.join(', ') : 'None met'));
+    const hm = homaIR(state.v);
+    T.push(tile('HOMA-IR', fmtNum(hm, 2), 'info', 'Higher = more insulin resistance', 'No single universal cut-off; varies by population.'));
+    const f4 = fib4(state.v), lo = state.v.age > 65 ? 2.0 : 1.3;
+    T.push(tile('FIB-4', fmtNum(f4, 2), f4 < lo ? 'ok' : f4 <= 2.67 ? 'warn' : 'bad', f4 < lo ? 'Low' : f4 <= 2.67 ? 'Indeterminate' : 'High', state.v.age < 35 ? 'Less reliable under age 35.' : `Low < ${lo} · high > 2.67`));
+    T.push(tile('eGFR', `${Math.round(R.egfr)} mL/min/1.73 m²`, R.egfr >= 60 ? 'ok' : R.egfr >= 30 ? 'warn' : 'bad', `KDIGO ${kdigo(R.egfr)}`, 'CKD-EPI 2021, from creatinine. G1–G2 need urine tests to define CKD.'));
+  }
+  $('#tiles').replaceChildren(...T);
+  // actions
+  $('#actions').replaceChildren(...R.actions.map(([p, t, d]) => h('div', { class: 'act' }, h('span', { class: 'prio ' + p }, p), h('div', null, h('b', null, t), h('p', null, d)))));
+  // urgent & checks
+  $('#urgent').hidden = !R.urgent.length; $('#urgent-list').replaceChildren(...R.urgent.map(u => h('li', null, u)));
+  $('#checks').hidden = !R.warnings.length; $('#checks-list').replaceChildren(...R.warnings.map(w => h('li', null, w)));
+  // BMI readout next to weight/height
+  form.querySelectorAll('[data-bmi]').forEach(el => { el.textContent = `BMI ${fmtNum(R.bmi, 1)}`; });
+  // mobile bar
+  $('#m-num').textContent = String(R.gauge.value); $('#m-suf').textContent = R.gauge.suf; $('#m-chip').textContent = L === 1 ? R.band.label : R.band.label.split(' —')[0];
+  announce(R);
+}
+function findBand(t) { return FBANDS.find(b => t <= b.max); }
+let annT = 0, lastAnn = '';
+function announce(R) {
+  clearTimeout(annT);
+  annT = setTimeout(() => {
+    const txt = (R.urgent.length ? 'Important: seek medical advice. ' : '') +
+      (R.L === 1 ? `FINDRISC ${R.gauge.value} of 26, ${R.band.label}.` : `${R.band.label}. Illustrative index ${R.gauge.value} of 100.`);
+    if (txt !== lastAnn) { lastAnn = txt; $('#live').textContent = txt; }
+  }, 1200);
+}
+
+/* ---------- tabs, settings, toolbar, theme ---------- */
+const tabs = [...document.querySelectorAll('[role=tab]')];
+function setLevel(L, focus) {
+  state.level = L;
+  tabs.forEach(t => { const on = Number(t.dataset.level) === L; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; if (on && focus) t.focus(); });
+  const p = $('#panel'); p.setAttribute('aria-labelledby', 'tab-' + L);
+  p.classList.remove('panel'); void p.offsetWidth; p.classList.add('panel');
+  buildInputs(); changed();
+}
+tabs.forEach((t, i) => {
+  t.addEventListener('click', () => setLevel(Number(t.dataset.level)));
+  t.addEventListener('keydown', e => {
+    const k = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+    if (k === undefined) return;
+    e.preventDefault(); setLevel(Number(tabs[(k + tabs.length) % tabs.length].dataset.level), true);
+  });
+});
+function syncCut() {
+  document.querySelectorAll('#cut-seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.cut === state.cut)));
+  $('#cut-hint').textContent = state.cut === 'asian'
+    ? 'Asian: BMI overweight ≥ 23, obesity ≥ 25; waist ≥ 90 cm (men) / ≥ 80 cm (women). FINDRISC and IDRS always use their own cut-offs.'
+    : 'General: BMI overweight ≥ 25, obesity ≥ 30; waist ≥ 102 cm (men) / ≥ 88 cm (women). FINDRISC and IDRS always use their own cut-offs.';
+}
+$('#cut-seg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; state.cut = b.dataset.cut; syncCut(); changed(); });
+$('#reset-btn').addEventListener('click', () => { for (const k of levelFields(state.level)) state.v[k] = DEF[k]; buildInputs(); changed(); });
+$('#print-btn').addEventListener('click', () => window.print());
+$('#copy-btn').addEventListener('click', async () => {
+  const url = location.href.split('#')[0] + shareHash(), b = $('#copy-btn');
+  let ok = false;
+  try { await navigator.clipboard.writeText(url); ok = true; } catch (e) { ok = false; }
+  if (!ok) { window.prompt('Copy this link:', url); return; }
+  b.textContent = '✓ Link copied'; setTimeout(() => { b.textContent = '🔗 Copy link'; }, 1800);
+});
+const THEMES = ['system', 'light', 'dark'];
+function applyTheme() {
+  if (state.theme === 'system') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', state.theme);
+  const name = state.theme[0].toUpperCase() + state.theme.slice(1);
+  $('#theme-btn span').textContent = name; $('#theme-btn').setAttribute('aria-label', 'Colour theme: ' + name);
+}
+$('#theme-btn').addEventListener('click', () => { state.theme = THEMES[(THEMES.indexOf(state.theme) + 1) % 3]; applyTheme(); persist(); });
+
+loadState(); applyTheme(); syncCut(); setLevel(state.level);
+})();
+</script>
+</body>
+</html>
