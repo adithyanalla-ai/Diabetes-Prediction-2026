@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>DiabetesRisk · Live diabetes risk screening</title>
+<meta name="description" content="Free diabetes risk screening in three levels, from a no-labs questionnaire to a full metabolic panel. Live results, what-if changes and personalised AI guidance.">
+<meta property="og:title" content="DiabetesRisk · Live diabetes risk screening">
+<meta property="og:description" content="FINDRISC and IDRS questionnaires, ADA glucose categories and metabolic indicators, updated as you type, with personalised AI guidance.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.webmanifest">
+<script type="module" src="/src/main.js"></script>
+</head>
+<body>
+<a href="#assess" class="sr-only">Skip to assessment</a>
+<header class="nav">
+  <div class="wrap">
+    <a href="#" class="brand"><span class="logo" aria-hidden="true"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5"/><path d="M8 5.5v2.5l1.5 1"/></svg></span><span>Diabetes<span class="lite">Risk</span></span></a>
+    <nav class="nav-r" aria-label="Primary">
+      <a href="#assess">Assess</a>
+      <a href="#methods">Methods</a>
+      <button type="button" class="icon-btn" id="theme-btn" aria-label="Colour theme: system">◐ <span>System</span></button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Free · No sign-up · Results update as you type</div>
+    <h1>Know your diabetes risk<br><span>and what moves it</span></h1>
+    <p>Three levels, from a no-labs questionnaire to a full metabolic panel. Each factor's contribution is shown, so you can see what changes the result, and an AI coach turns your numbers into a personal plan.</p>
+    <p class="disclaimer"><strong>Not a diagnosis.</strong> This is a screening and education tool. It estimates risk and flags values worth discussing with a clinician. It cannot tell you whether you have diabetes, and only laboratory testing can.</p>
+  </section>
+
+  <noscript><p class="noscript">This tool needs JavaScript to calculate results in your browser.</p></noscript>
+
+  <section id="assess" aria-labelledby="assess-h">
+    <h2 id="assess-h" class="sr-only">Risk assessment</h2>
+    <div class="assess-top">
+      <div class="tablist" role="tablist" aria-label="Assessment level">
+        <button class="tab" role="tab" id="tab-1" aria-controls="panel" data-level="1">Level 1 · Lifestyle<small>No labs needed</small></button>
+        <button class="tab" role="tab" id="tab-2" aria-controls="panel" data-level="2">Level 2 · Clinical<small>Glucose, HbA1c, BP</small></button>
+        <button class="tab" role="tab" id="tab-3" aria-controls="panel" data-level="3">Level 3 · Comprehensive<small>Lipids, liver, kidney</small></button>
+      </div>
+      <div class="toolbar">
+        <button type="button" class="btn" id="reset-btn">↺ Reset level</button>
+        <button type="button" class="btn" id="copy-btn">🔗 Copy link</button>
+        <button type="button" class="btn" id="print-btn">⎙ Print / PDF</button>
+      </div>
+    </div>
+
+    <div id="panel" role="tabpanel" class="panel" tabindex="-1">
+      <div class="grid">
+        <div>
+          <div class="card settings" role="group" aria-labelledby="cut-lbl">
+            <span class="lbl" id="cut-lbl">BMI &amp; waist cut-offs</span>
+            <span class="seg" id="cut-seg">
+              <button type="button" data-cut="asian">Asian</button>
+              <button type="button" data-cut="general">General</button>
+            </span>
+            <span class="hint" id="cut-hint"></span>
+          </div>
+          <div class="card checks" id="checks" hidden><h2>Check these values</h2><ul id="checks-list"></ul></div>
+          <form id="inputs" novalidate></form>
+        </div>
+
+        <aside class="results" id="results" aria-labelledby="res-h">
+          <div class="urgent" id="urgent" role="alert" hidden><h2><span aria-hidden="true">⚠</span> Seek medical advice</h2><ul id="urgent-list"></ul></div>
+          <div class="rc">
+            <h2 class="rc-lbl" id="res-h">Result</h2>
+            <svg class="gauge" viewBox="0 0 200 112" aria-hidden="true">
+              <path class="track" d="M 16 100 A 84 84 0 0 1 184 100" fill="none" stroke-width="12" stroke-linecap="round"/>
+              <path class="fill" id="g-fill" d="M 16 100 A 84 84 0 0 1 184 100" fill="none" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+            </svg>
+            <div class="big"><span id="g-num">0</span><small id="g-suf"></small></div>
+            <div class="big-lbl" id="g-lbl"></div>
+            <div class="chip" id="chip"><span aria-hidden="true" id="chip-ic"></span><span id="chip-tx"></span></div>
+            <p class="rc-sub" id="rc-sub"></p>
+            <div class="strip" id="strip"></div>
+            <hr>
+            <h3 id="drv-h">What drives this result</h3>
+            <div id="drivers"></div>
+          </div>
+
+          <div class="card sec ai" aria-labelledby="ai-h">
+            <div class="ai-head">
+              <h2 id="ai-h">AI guidance <span class="ai-badge">Claude</span></h2>
+              <button type="button" class="btn primary" id="ai-btn">✦ Get AI guidance</button>
+            </div>
+            <div class="ai-status" id="ai-status" aria-live="polite"></div>
+            <div class="ai-body" id="ai-body"></div>
+            <p class="ai-foot" id="ai-foot">Writes a plan from your numbers. Only anonymous values and your answers are sent, never your name or any identifier. AI can make mistakes, so check anything important with a clinician.</p>
+          </div>
+
+          <div class="card sec">
+            <h2>What if…<span class="muted">one change at a time</span></h2>
+            <div id="whatif"></div>
+          </div>
+
+          <div class="card sec">
+            <h2>Criteria &amp; indicators</h2>
+            <div class="tiles" id="tiles"></div>
+          </div>
+
+          <div class="card sec">
+            <h2>Your action plan<span class="muted">rule-based</span></h2>
+            <div id="actions"></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="methods" id="methods" aria-labelledby="methods-h">
+    <div class="eyebrow">Methods &amp; limitations</div>
+    <h2 id="methods-h">What the numbers are, and aren't</h2>
+    <h3>Level 1: validated questionnaires</h3>
+    <p><b>FINDRISC</b> (Finnish Diabetes Risk Score) scores 8 items from 0 to 26. Each score band maps to the published estimate of 10-year type 2 diabetes risk from the original Finnish cohort: about 1 in 100, 1 in 25, 1 in 6, 1 in 3 or 1 in 2. It uses its own European BMI and waist cut-offs. <b>IDRS</b> (Indian Diabetes Risk Score) scores 4 items from 0 to 100 using Asian waist cut-offs. It was developed to screen for undiagnosed diabetes in India. Sleep and smoking are asked but are <i>not</i> part of either score. They only shape the guidance.</p>
+    <h3>Levels 2–3: criteria plus an illustrative index</h3>
+    <p>The glucose category uses ADA diagnostic thresholds: HbA1c 5.7–6.4% or fasting glucose 100–125 mg/dL is the prediabetes range; HbA1c ≥ 6.5% or fasting glucose ≥ 126 mg/dL is the diabetes range. A diagnosis always needs confirmation by a clinician, usually with repeat testing. The other indicators are:</p>
+    <ul>
+      <li>Metabolic-syndrome criteria: harmonised definition, any 3 of 5.</li>
+      <li>HOMA-IR: an insulin-resistance estimate from fasting glucose and insulin.</li>
+      <li>FIB-4: a liver-fibrosis index.</li>
+      <li>eGFR: kidney function, calculated with the race-free CKD-EPI 2021 equation and staged by KDIGO.</li>
+    </ul>
+    <p>The 0–100 <b>index</b> is a hand-weighted logistic formula. Its weights were chosen for illustration and were <b>not fitted to or validated on any data</b>, so it is not a probability. It exists to show how factors move together. Each bar shows <code>weight × (your value − reference value)</code>. The reference person is 40 years old with BMI 23, waist at the cut-off, no family history, regular activity, fasting glucose 90 mg/dL, HbA1c 5.3% and systolic BP 120 mmHg; Level 3 adds HOMA-IR 1.5, TG 100 mg/dL and HDL 50 mg/dL.</p>
+    <h3>AI guidance</h3>
+    <p>The server recomputes every score from your numbers and gives Claude only those results, so the AI cannot change or contradict them. It is told not to diagnose, not to name medicines or doses, and to put urgent flags first. Its output is checked against a strict format before it is shown. If the AI is unavailable, rate-limited or declines, the rule-based plan is shown instead.</p>
+    <h3>Privacy</h3>
+    <p>Calculations run in your browser and your entries are saved only on this device (and in the link if you copy it). When you press <i>Get AI guidance</i>, the numeric values and answers for the current level are sent to this site's server and on to Anthropic's API to write the plan. No name, email, IP-linked profile or free text is collected or stored by this app.</p>
+    <h3>Limitations</h3>
+    <ul>
+      <li>No result here is a diagnosis. The questionnaires were validated in Finnish (FINDRISC) and Indian (IDRS) populations and may be less accurate elsewhere.</li>
+      <li>HbA1c can be misleading with anaemia, haemoglobin variants, pregnancy or recent blood loss.</li>
+      <li>FIB-4 is less reliable under 35 and over 65. eGFR from creatinine is affected by muscle mass and diet.</li>
+      <li>Medications that change glucose, lipids or blood pressure are not modelled.</li>
+    </ul>
+    <h3>References</h3>
+    <ol>
+      <li>Lindström J, Tuomilehto J. The Diabetes Risk Score: a practical tool to predict type 2 diabetes risk. <i>Diabetes Care</i> 2003;26:725–731.</li>
+      <li>Mohan V, Deepa R, Deepa M, Somannavar S, Datta M. A simplified Indian Diabetes Risk Score for screening for undiagnosed diabetic subjects. <i>J Assoc Physicians India</i> 2005;53:759–763. <span class="todo">TODO review: activity item mapping</span></li>
+      <li>American Diabetes Association Professional Practice Committee. Diagnosis and Classification of Diabetes: Standards of Care in Diabetes. <i>Diabetes Care</i>, current Supplement 1. <span class="todo">TODO: pin edition &amp; pages</span></li>
+      <li>Alberti KGMM et al. Harmonizing the metabolic syndrome. <i>Circulation</i> 2009;120:1640–1645.</li>
+      <li>WHO Western Pacific Region / IASO / IOTF. The Asia-Pacific perspective: redefining obesity and its treatment. 2000.</li>
+      <li>Matthews DR et al. Homeostasis model assessment. <i>Diabetologia</i> 1985;28:412–419.</li>
+      <li>Sterling RK et al. Development of a simple noninvasive index to predict significant fibrosis (FIB-4). <i>Hepatology</i> 2006;43:1317–1325.</li>
+      <li>Inker LA et al. New creatinine- and cystatin C–based equations to estimate GFR without race. <i>N Engl J Med</i> 2021;385:1737–1749.</li>
+      <li>Diabetes Prevention Program Research Group. Reduction in the incidence of type 2 diabetes with lifestyle intervention or metformin. <i>N Engl J Med</i> 2002;346:393–403.</li>
+      <li>Whelton PK et al. 2017 ACC/AHA high blood pressure guideline. <i>Hypertension</i> 2018;71:e13–e115.</li>
+    </ol>
+  </section>
+</main>
+
+<footer><div class="wrap">Educational screening tool — not a diagnostic device. Your inputs are processed in your browser and saved only on this device. AI guidance is generated on request via Anthropic's Claude.</div></footer>
+
+<div class="mbar" id="mbar" aria-hidden="true"><span><b id="m-num">–</b> <span id="m-suf"></span> · <span class="mchip" id="m-chip"></span></span><a href="#results" tabindex="-1">View details ↓</a></div>
+<div class="sr-only" aria-live="polite" id="live"></div>
+</body>
+</html>
