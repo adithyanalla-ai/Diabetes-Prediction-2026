@@ -21,6 +21,10 @@ npm run build               # production build, fails if JS > 60 KB gzip
 
 Without a key the API answers 503 and the app shows its rule-based action plan.
 
+## Collecting responses (optional, consent-based)
+
+Visitors can tick a consent box and press *Send my results* to submit an optional name/email, their entries for the current level and their result to Formspree (`src/share.js`). Nothing is sent without that action. Set `VITE_FORMSPREE_URL` to use a different form.
+
 ## How the AI part works
 
 1. The browser sends only enums and numbers for the current level (strict zod schema, unknown keys rejected, 4 KB cap).

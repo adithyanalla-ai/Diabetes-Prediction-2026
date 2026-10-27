@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+- Optional, consent-gated "Send my results to the site owner" form: optional name/email plus the current level's inputs and result go to Formspree (`VITE_FORMSPREE_URL` overrides the endpoint). Privacy text, CSP (`connect-src`/`form-action` allow formspree.io) and tests updated. Name/email are never sent to Claude.
+- Formspree must be activated (first submission is confirmed by email); consider restricting allowed domains in its dashboard. Health data: add a data-retention/deletion process and check local privacy law (e.g. GDPR, India DPDP).
+
 ## 1.0.0
 - Replaced the legacy single-file app (see AUDIT.md) with a Vite app: tested pure model, live UI, server-side Claude guidance.
 - Removed all fabricated accuracy/AUC/dataset claims, fabricated sub-scores and the contradictory privacy text.

@@ -92,7 +92,19 @@
             </div>
             <div class="ai-status" id="ai-status" aria-live="polite"></div>
             <div class="ai-body" id="ai-body"></div>
-            <p class="ai-foot" id="ai-foot">Writes a plan from your numbers. Only anonymous values and your answers are sent, never your name or any identifier. AI can make mistakes, so check anything important with a clinician.</p>
+            <p class="ai-foot" id="ai-foot">Writes a plan from your numbers. Only anonymous values and your answers are sent for this, never your name or any identifier. AI can make mistakes, so check anything important with a clinician.</p>
+          </div>
+
+          <div class="card sec share" aria-labelledby="share-h">
+            <h2 id="share-h">Send my results to the site owner <span class="muted">optional</span></h2>
+            <form id="share-form" novalidate>
+              <div class="field"><label class="flabel" for="sh-name">Name (optional)</label><input type="text" id="sh-name" maxlength="120" autocomplete="name"></div>
+              <div class="field"><label class="flabel" for="sh-email">Email (optional)</label><input type="email" id="sh-email" maxlength="200" autocomplete="email"></div>
+              <div class="hp" aria-hidden="true"><label>Leave blank<input type="text" id="sh-gotcha" tabindex="-1" autocomplete="off"></label></div>
+              <label class="consent"><input type="checkbox" id="sh-consent"> <span>I agree to send my name and email (if given), the answers and lab values I entered for this level, and my result to the site owner through Formspree. This is health information. I can ask for it to be deleted.</span></label>
+              <button type="submit" class="btn primary" id="sh-btn">Send my results</button>
+              <p class="ai-status" id="sh-status" role="status"></p>
+            </form>
           </div>
 
           <div class="card sec">
@@ -131,7 +143,7 @@
     <h3>AI guidance</h3>
     <p>The server recomputes every score from your numbers and gives Claude only those results, so the AI cannot change or contradict them. It is told not to diagnose, not to name medicines or doses, and to put urgent flags first. Its output is checked against a strict format before it is shown. If the AI is unavailable, rate-limited or declines, the rule-based plan is shown instead.</p>
     <h3>Privacy</h3>
-    <p>Calculations run in your browser and your entries are saved only on this device (and in the link if you copy it). When you press <i>Get AI guidance</i>, the numeric values and answers for the current level are sent to this site's server and on to Anthropic's API to write the plan. No name, email, IP-linked profile or free text is collected or stored by this app.</p>
+    <p>Calculations run in your browser and your entries are saved only on this device (and in the link if you copy it). When you press <i>Get AI guidance</i>, the numeric values and answers for the current level are sent to this site's server and on to Anthropic's API to write the plan. No name, email or free text is included in that request. Nothing else is sent anywhere unless you choose to: if you tick the consent box and press <i>Send my results</i>, your optional name and email, the values you entered for the current level and your result are sent to the site owner through Formspree (formspree.io), which stores them for the owner. That is health information, so only send it if you are comfortable doing so. Ask the site owner to delete it at any time.</p>
     <h3>Limitations</h3>
     <ul>
       <li>No result here is a diagnosis. The questionnaires were validated in Finnish (FINDRISC) and Indian (IDRS) populations and may be less accurate elsewhere.</li>
@@ -155,7 +167,7 @@
   </section>
 </main>
 
-<footer><div class="wrap">Educational screening tool — not a diagnostic device. Your inputs are processed in your browser and saved only on this device. AI guidance is generated on request via Anthropic's Claude.</div></footer>
+<footer><div class="wrap">Educational screening tool — not a diagnostic device. Your inputs are processed in your browser and saved only on this device unless you choose to send them. AI guidance is generated on request via Anthropic's Claude.</div></footer>
 
 <div class="mbar" id="mbar" aria-hidden="true"><span><b id="m-num">–</b> <span id="m-suf"></span> · <span class="mchip" id="m-chip"></span></span><a href="#results" tabindex="-1">View details ↓</a></div>
 <div class="sr-only" aria-live="polite" id="live"></div>

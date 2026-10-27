@@ -11,6 +11,7 @@ import { compute, bmiCat, waistCut, FBANDS, findBand, ADA_BAND, kdigo, bpCat, fi
 import { actionPlan } from './guidance.js';
 import { state, loadState, persist, shareHash } from './state.js';
 import { buildPayload, streamGuidance } from './api.js';
+import { buildSharePayload, sendShare } from './share.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 function h(tag, attrs, ...kids) {
@@ -174,6 +175,7 @@ function driverRow(label, valText, cls, bar) {
   return h('div', { class: 'drv' }, h('div', { class: 'drv-row' }, h('span', null, label), h('span', { class: `drv-val ${cls}` }, valText)), bar);
 }
 
+let lastR = null;
 function render() {
   const v = state.v;
   const L = state.level;
@@ -181,6 +183,7 @@ function render() {
   const R = compute(v, L, state.cut, uiFmt);
   if (hbStep !== '0.5%') for (const w of R.what) w.label = w.label.replace('0.5%', hbStep);
   R.plan = actionPlan(L, v, R, uiFmt);
+  lastR = R;
 
   if (gKind !== L) { gKind = L; gCur = 0; }
   gMax = R.gauge.max;
@@ -356,6 +359,24 @@ function resetAi() {
   $('#ai-body').replaceChildren();
   setAiStatus('');
 }
+
+/* ---------- optional share with site owner (consent required) ---------- */
+$('#share-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const st = $('#sh-status');
+  const btn = $('#sh-btn');
+  const email = $('#sh-email').value.trim();
+  if (!$('#sh-consent').checked) { st.className = 'ai-status err'; st.textContent = 'Please tick the consent box to send your results.'; return; }
+  if (email && !$('#sh-email').checkValidity()) { st.className = 'ai-status err'; st.textContent = 'That email address doesn\'t look right.'; return; }
+  btn.disabled = true;
+  st.className = 'ai-status';
+  st.textContent = 'Sending…';
+  const payload = buildSharePayload({ name: $('#sh-name').value, email, state, R: lastR, aiShown: Boolean(ai.shownFor), consent: true });
+  const r = await sendShare(payload, $('#sh-gotcha').value);
+  btn.disabled = false;
+  if (r.ok) { st.className = 'ai-status'; st.textContent = 'Sent. Thank you.'; $('#sh-consent').checked = false; }
+  else { st.className = 'ai-status err'; st.textContent = r.message; }
+});
 
 /* ---------- tabs, settings, toolbar, theme ---------- */
 const tabs = [...document.querySelectorAll('[role=tab]')];
