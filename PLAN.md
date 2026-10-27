@@ -1,6 +1,6 @@
 # PLAN — DiabetesRisk production upgrade
 
-Status: **Phase 0 complete — awaiting approval of the decisions in §1 before Phase 1 starts.**
+Status: **Implemented in 1.0.0 (see CHANGELOG.md). Decisions taken: D1 hybrid, D2 Vercel, D3 legacy paper claims dropped, D4 English only.**
 Each phase ends with a commit (or a few), a `npm test` run where applicable, and a diff summary.
 
 ---
